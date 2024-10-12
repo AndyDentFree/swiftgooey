@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct CrashVanashApp: App {
+    @State var doc = TinyDoc()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(vm: $doc)
         }
     }
 }

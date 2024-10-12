@@ -21,6 +21,13 @@ Start holding down the "-" button so the count reduces towards zero.
 Instead of a crash, the button vanishes as expected **but** when you press the _Reset Count_ button to make it reappear, the auto-press of the button **is still active** and keeps going until the control disappears again.
 
 
+### Adding a doc
+The original has a document with `didSet` on most properties, that adjusts a live SKEmitter.
+
+To emulate this overhead, instead of a simple state int, we have `TinyDoc` which has a function `blockMainThread`.
+
+When testing, putting a print statement in that blocker function revealed that the button repeat was **continuing even when the control was hidden**.
+
 [p1]: https://www.touchgram.com/purrticles
 [s1]: https://developer.apple.com/documentation/swiftui/view/buttonrepeatbehavior(_:)
 [g1]: https://github.com/AndyDentFree/swiftgooey/commit/adead7939877c2e558494ec5dfcc09d3e8fa4b0f

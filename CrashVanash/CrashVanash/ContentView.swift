@@ -8,10 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var count: Int = 10
-    @State var countu: UInt = 10
     @FocusState var focTag: ControlFocusTag?  // used to hide numeric keypad
-
+    @Binding var vm: TinyDoc
 
     var body: some View {
         VStack {
@@ -19,22 +17,33 @@ struct ContentView: View {
                 .font(.largeTitle)
             Spacer()
             Button("Reset Count") {
-                count = 10
+                vm.reset()
             }
             .buttonStyle(.borderedProminent)
             Spacer()
-            Text("Button vanishes when hits zero, holding down on\n+/- to repeat should trigger weird things")
+            Text("""
+            Button vanishes when hits zero, holding down on
+            +/- to repeat should trigger weird things
+            
+            hold it down for long enough that accelerates change
+            """
+            )
+            .multilineTextAlignment(.center)
             Spacer()
                 .frame(height: 20)
-            if count > 0 {
-                StepperNumView<Int>(title: "Count, tap centre to edit", tag: .count, value: $count, step: 1, focusedTag: $focTag)
+            if vm.count > 0 {
+                StepperNumView<Int>(title: "Count, tap centre to edit", tag: .count, value: $vm.count, step: 1, focusedTag: $focTag)
                     .padding(.horizontal)
             } else {
-                Text("Button vanished with invalid count")
+                Text("Button vanished hitting zero")
             }
+            if vm.ucount > 0 {
             Spacer()
-            StepperNumView<UInt>(title: "Usigned", tag: .unsignedCount, value: $countu, step: 1, focusedTag: $focTag)
+            StepperNumView<UInt>(title: "Usigned", tag: .unsignedCount, value: $vm.ucount, step: 1, focusedTag: $focTag)
                 .padding(.horizontal)
+            } else {
+                Text("Button vanished hitting zero")
+            }
             Spacer()
         }
         .padding()
@@ -42,5 +51,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView(vm: .constant(TinyDoc()))
 }

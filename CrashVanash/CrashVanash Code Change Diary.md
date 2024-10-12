@@ -32,3 +32,14 @@ ContentView
 - host @FocusState and pass to buttons
 - add second button with UInt
 
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+## Make updates more complex to better emulate original app
+2024-10-11
+
+TinyDoc
+- added
+
+ContentView
+- use TinyDoc instead of local @State for counts
+

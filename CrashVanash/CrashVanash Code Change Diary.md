@@ -32,3 +32,15 @@ ContentView
 - host @FocusState and pass to buttons
 - add second button with UInt
 
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+## Identify cause of crash - button with UInt binding that hides on 0 count
+2024-10-12
+
+ControlFocusTag
+- unsignedCountNonVanish added
+
+ContentView
+- countuNonVanishing added
+- made button bound to UInt vanish when count hits zero
+- added third button also bound to UInt to show contrast if not vanishing

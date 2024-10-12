@@ -4,10 +4,13 @@ Exists to explore fixes to an interesting gotcha I had in my MultiPlatform Swift
 
 1. An "Applied" view which only showed controls with non-default values
 2. Using a button with [buttonRepeatBehavior][s1]
+3. The crash triggered by a button bound to a UInt 
 
 The combination resulting in, when you hold down the "-" button, as it hits zero and the control vanishes, the app crashes.
 
-**OOPS!** seems on further testing that the crash was because that particular control was bound to a UInt so naturally had an out-of-bounds crash. However, given the interesting buggy behaviour identified below, will keep this sample going.
+**The crash is because the auto-repeat keeps going whilst the button is invisible.**
+
+A near-identical stepper at the bottom of the screen doesn't vanish on count zero - it just stops responding to the '-'button.
 
 ## Replicating crash in cutdown sample
 

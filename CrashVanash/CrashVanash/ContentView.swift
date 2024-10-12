@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State var count: Int = 10
     @State var countu: UInt = 10
+    @State var countuNonVanishing: UInt = 10
     @FocusState var focTag: ControlFocusTag?  // used to hide numeric keypad
 
 
@@ -30,10 +31,23 @@ struct ContentView: View {
                 StepperNumView<Int>(title: "Count, tap centre to edit", tag: .count, value: $count, step: 1, focusedTag: $focTag)
                     .padding(.horizontal)
             } else {
-                Text("Button vanished with invalid count")
+                Text("Button vanished with zero count")
             }
             Spacer()
-            StepperNumView<UInt>(title: "Usigned", tag: .unsignedCount, value: $countu, step: 1, focusedTag: $focTag)
+            Text("""
+                Button vanishes when hits zero
+                on auto-repeat '-' button
+                and APP CRASHES
+                """)
+            if countu > 0 {
+                StepperNumView<UInt>(title: "Unsigned", tag: .unsignedCount, value: $countu, step: 1, focusedTag: $focTag)
+                    .padding(.horizontal)
+            } else {
+                Text("Button vanished with zero count")
+            }
+            Spacer()
+            Text("Won't crash, just stops at zero as button is disabled")
+            StepperNumView<UInt>(title: "Unsigned non-crashing", tag: .unsignedCountNonVanish, value: $countuNonVanishing, step: 1, focusedTag: $focTag)
                 .padding(.horizontal)
             Spacer()
         }

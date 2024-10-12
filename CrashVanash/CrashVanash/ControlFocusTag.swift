@@ -8,4 +8,5 @@
 enum ControlFocusTag: Int, CaseIterable {
     case count
     case unsignedCount
+    case unsignedCountNonVanish
 }

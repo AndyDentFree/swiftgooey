@@ -8,12 +8,11 @@ import SwiftUI
 
 struct StepperNumView<T: Numeric>: View {
     let title: String
+    let tag: ControlFocusTag
     @Binding var value: T
     let step: T
-    @FocusState var isFocused: Bool // shared state to ensure cancel numeric keypad
-    // WARNING if you copy StepperNumView and use more than one on a view, it won't work:
-    // Tapping a +/- on one button will cancel editing text on another. Our real solution is more complex.
-
+    @FocusState.Binding var focusedTag: ControlFocusTag?  // shared state to ensure cancel numeric keypad
+    
     let zeroBased = T.self == UInt.self
     let numFormat: NumberFormatter =  {
         let ret = NumberFormatter()
@@ -33,19 +32,19 @@ struct StepperNumView<T: Numeric>: View {
             HStack(spacing: 0) {
                 StepperButtonView(isDown: true) {
                     value -= step
-                    isFocused = false
+                    focusedTag = nil
                 }
                 .disabled(zeroBased && value == 0)
-                                
+                
                 ZStack {
                     // Display the number
                     Text(numFormat.string(for: value) ?? "")
                         .font(.title2)
                         .foregroundColor(.primary)
                         .background(Color.clear)
-                        .opacity(isFocused ? 0 : 1)
+                        .opacity(focusedTag == tag ? 0 : 1)
                         .onTapGesture {
-                            isFocused = true
+                            focusedTag = tag
                         }
                     
                     // Editable TextField
@@ -57,21 +56,21 @@ struct StepperNumView<T: Numeric>: View {
                         .font(.title2)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.clear)
-                        .opacity(isFocused ? 1 : 0)
+                        .opacity(focusedTag == tag ? 1 : 0)
                         .onSubmit {
-                            isFocused = false
+                            focusedTag = nil
                         }
-                        .focused($isFocused) // Automatically focus when editing starts
+                        .focused($focusedTag, equals: tag) // Automatically focus when editing starts
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
                 StepperButtonView(isDown: false) {
                     value += step
-                    isFocused = false
+                    focusedTag = nil
                 }
             }
             .frame(height: 40)
-            .background(Color.secondary)
+            .background(Color.yellow.opacity(0.5))
             .cornerRadius(10)
             
             Text(title)
@@ -84,15 +83,13 @@ struct StepperNumView_Previews: PreviewProvider {
     static var previews: some View {
         @State var testFives: UInt = 5
         @State var testZero_One = 0.7
-
+        @FocusState var parentFlag: ControlFocusTag?
+        
         VStack {
-            HStack (alignment: .top) {
-                StepperNumView<UInt>(title: "Test fives", value: $testFives, step: UInt(5))
-            }
-            Spacer()
-                .frame(height: 40)
-            StepperNumView<Double>(title: "Test float", value: $testZero_One, step: 0.1)
+            StepperNumView<UInt>(title: "Test fives", tag:.count, value: $testFives, step: UInt(5), focusedTag: $parentFlag)
+                .background(Color.purple)
         }
-        .padding(.horizontal)
+        StepperNumView<Double>(title: "Test float", tag:.unsignedCount, value: $testZero_One, step: 0.1, focusedTag: $parentFlag)
+            .background(Color.cyan)
     }
 }

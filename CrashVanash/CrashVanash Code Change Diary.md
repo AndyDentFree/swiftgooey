@@ -44,3 +44,14 @@ ContentView
 - countuNonVanishing added
 - made button bound to UInt vanish when count hits zero
 - added third button also bound to UInt to show contrast if not vanishing
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+## Prevent crash (but not repeats)
+2024-10-13
+
+ContentView
+- move conditionals around buttons out to include Text elements above, to show wider scope may be hidden
+
+StepperNumView
+- change button action on minus to only deduct step if above value

@@ -21,25 +21,27 @@ struct ContentView: View {
             Spacer()
             Button("Reset Count") {
                 count = 10
+                countu = 10
             }
             .buttonStyle(.borderedProminent)
             Spacer()
-            Text("Button vanishes when hits zero, holding down on\n+/- to repeat should trigger weird things")
-            Spacer()
-                .frame(height: 20)
             if count > 0 {
+                // condition put up here to show it's a higher-level block that disappears
+                Text("Button vanishes when hits zero, holding down on\n+/- to repeat should trigger weird things")
+                Spacer()
+                    .frame(height: 20)
                 StepperNumView<Int>(title: "Count, tap centre to edit", tag: .count, value: $count, step: 1, focusedTag: $focTag)
                     .padding(.horizontal)
             } else {
                 Text("Button vanished with zero count")
             }
             Spacer()
-            Text("""
-                Button vanishes when hits zero
-                on auto-repeat '-' button
-                and APP CRASHES
-                """)
             if countu > 0 {
+                Text("""
+                    Button vanishes when hits zero
+                    on auto-repeat '-' button
+                    and APP CRASHES
+                    """)
                 StepperNumView<UInt>(title: "Unsigned", tag: .unsignedCount, value: $countu, step: 1, focusedTag: $focTag)
                     .padding(.horizontal)
             } else {

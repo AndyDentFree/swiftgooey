@@ -6,7 +6,7 @@
 import SwiftUI
 //TODO: https://bitbucket.org/touchgram/purrticles/issues/37/cleanup-stepper-control-variants-techdebt
 
-struct StepperNumView<T: Numeric>: View {
+struct StepperNumView<T: Numeric & Comparable>: View {
     let title: String
     let tag: ControlFocusTag
     @Binding var value: T
@@ -31,7 +31,16 @@ struct StepperNumView<T: Numeric>: View {
         VStack {
             HStack(spacing: 0) {
                 StepperButtonView(isDown: true) {
-                    value -= step
+                    if zeroBased {
+                        if value == 0 {
+                            // message will keep appearing in console & if make visible again, keeps repeating until vanishes
+                            print("skipping adjustment from repeating button")
+                        } else {
+                            value = max(0, value-step) // catch when are less than one step away from zero
+                        }
+                    } else {
+                        value -= step
+                    }
                     focusedTag = nil
                 }
                 .disabled(zeroBased && value == 0)

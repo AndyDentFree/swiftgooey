@@ -32,10 +32,11 @@ This is a _race condition_ bug - the condition to remove it from the view is bei
 
 So, what's a good way to delay removal? Add an animation!
 
-The branch `AnimatingFixes` shows this working.
+The branch [AnimatingFixes][g2] shows this working.
 
 [p1]: https://www.touchgram.com/purrticles
 [s1]: https://developer.apple.com/documentation/swiftui/view/buttonrepeatbehavior(_:)
 [g1]: https://github.com/AndyDentFree/swiftgooey/commit/adead7939877c2e558494ec5dfcc09d3e8fa4b0f
+[g2]: https://github.com/AndyDentFree/swiftgooey/tree/AnimatingFixes
 [r]: https://openradar.appspot.com/radar?id=EhAKBVJhZGFyEICAgMbHi-MJ
 [so1]: https://stackoverflow.com/questions/79081773/in-swiftui-a-button-continues-to-autorepeat-after-being-hidden-need-to-cancel

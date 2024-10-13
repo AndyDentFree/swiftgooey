@@ -55,3 +55,16 @@ ContentView
 
 StepperNumView
 - change button action on minus to only deduct step if above value
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+## Add simple animation FIXES CRASH
+2024-10-13
+
+ContentView
+- add local computed properties signedShouldAppear & unsignedShouldAppear
+- use flag properties instead of countu > 0
+- add .animations based on flag properties
+
+StepperNumView
+- add a withAnimation around the decrement action block that might trigger an animated disappearance

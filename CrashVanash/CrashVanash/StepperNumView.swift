@@ -31,12 +31,14 @@ struct StepperNumView<T: Numeric & Comparable>: View {
         VStack {
             HStack(spacing: 0) {
                 StepperButtonView(isDown: true) {
-                    if zeroBased {
-                        if value == 0 {
-                            // message will keep appearing in console & if make visible again, keeps repeating until vanishes
-                            print("skipping adjustment from repeating button")
-                        } else {
-                            value = max(0, value-step) // catch when are less than one step away from zero
+                    if zeroBased {  // may disappear or have other animations
+                        withAnimation {
+                            if value == 0 {
+                                // message will keep appearing in console & if make visible again, keeps repeating until vanishes
+                                print("skipping adjustment from repeating button")
+                            } else {
+                                value = max(0, value-step) // catch when are less than one step away from zero
+                            }
                         }
                     } else {
                         value -= step

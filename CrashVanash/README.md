@@ -12,6 +12,8 @@ The combination resulting in, when you hold down the "-" button, as it hits zero
 
 A near-identical stepper at the bottom of the screen doesn't vanish on count zero - it just stops responding to the '-'button.
 
+Also posted the bug [on StackOverflow][so1]
+
 ## Replicating crash in cutdown sample
 
 ### Stuck on repeat
@@ -23,7 +25,17 @@ Start holding down the "-" button so the count reduces towards zero.
 
 Instead of a crash, the button vanishes as expected **but** when you press the _Reset Count_ button to make it reappear, the auto-press of the button **is still active** and keeps going until the control disappears again.
 
+## The Fix!
+The apple bug is real, filed as FB15477204 and as rdar://FB15477204 **but** in doing all these writeups, had an idea.
+
+This is a _race condition_ bug - the condition to remove it from the view is being evaluated before the `.disabled` clause on the button.
+
+So, what's a good way to delay removal? Add an animation!
+
+The branch `AnimatingFixes` shows this working.
 
 [p1]: https://www.touchgram.com/purrticles
 [s1]: https://developer.apple.com/documentation/swiftui/view/buttonrepeatbehavior(_:)
 [g1]: https://github.com/AndyDentFree/swiftgooey/commit/adead7939877c2e558494ec5dfcc09d3e8fa4b0f
+[r]: https://openradar.appspot.com/radar?id=EhAKBVJhZGFyEICAgMbHi-MJ
+[so1]: https://stackoverflow.com/questions/79081773/in-swiftui-a-button-continues-to-autorepeat-after-being-hidden-need-to-cancel

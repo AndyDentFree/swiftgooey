@@ -12,6 +12,12 @@ struct ContentView: View {
     @State var countu: UInt = 10
     @State var countuNonVanishing: UInt = 10
     @FocusState var focTag: ControlFocusTag?  // used to hide numeric keypad
+    var signedShouldAppear: Bool {get{
+        count > 0
+    }}
+    var unsignedShouldAppear: Bool {get{
+        countu > 0
+    }}
 
 
     var body: some View {
@@ -25,7 +31,7 @@ struct ContentView: View {
             }
             .buttonStyle(.borderedProminent)
             Spacer()
-            if count > 0 {
+            if signedShouldAppear {
                 // condition put up here to show it's a higher-level block that disappears
                 Text("Button vanishes when hits zero, holding down on\n+/- to repeat should trigger weird things")
                 Spacer()
@@ -36,11 +42,10 @@ struct ContentView: View {
                 Text("Button vanished with zero count")
             }
             Spacer()
-            if countu > 0 {
+            if unsignedShouldAppear {
                 Text("""
                     Button vanishes when hits zero
                     on auto-repeat '-' button
-                    and APP CRASHES
                     """)
                 StepperNumView<UInt>(title: "Unsigned", tag: .unsignedCount, value: $countu, step: 1, focusedTag: $focTag)
                     .padding(.horizontal)
@@ -53,6 +58,8 @@ struct ContentView: View {
                 .padding(.horizontal)
             Spacer()
         }
+        .animation(.easeOut(duration: 1.0), value: signedShouldAppear)
+        .animation(.easeOut(duration: 1.0), value: unsignedShouldAppear)
         .padding()
     }
 }

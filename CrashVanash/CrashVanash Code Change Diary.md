@@ -65,6 +65,3 @@ ContentView
 - add local computed properties signedShouldAppear & unsignedShouldAppear
 - use flag properties instead of countu > 0
 - add .animations based on flag properties
-
-StepperNumView
-- add a withAnimation around the decrement action block that might trigger an animated disappearance

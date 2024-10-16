@@ -14,6 +14,8 @@ A near-identical stepper at the bottom of the screen doesn't vanish on count zer
 
 Also posted the bug [on StackOverflow][so1]
 
+Note that the branches on this sample show a few different explorations so have been left in the repo.
+
 ## Replicating crash in cutdown sample
 
 ### Stuck on repeat

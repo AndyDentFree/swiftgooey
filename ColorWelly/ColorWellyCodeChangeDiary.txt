@@ -1,0 +1,18 @@
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Creation
+2024-12-25
+Created basic project as MultiPlatform SwiftUI
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Make into demo of multiple rows picking color
+2024-12-25..28
+
+WellyBoot
+BootView
+- added to have a simple boot outline to fill (because puns)
+
+ContentView
+- added ScrollView with nested Grid and three row with slight differences
+- WellyBoot drawn in  first column using color picked from adjacent cell

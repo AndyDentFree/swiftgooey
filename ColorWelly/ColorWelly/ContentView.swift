@@ -7,72 +7,90 @@
 
 import SwiftUI
 
+
+struct ControlLabelView: View {
+    let title: String
+    
+    var body: some View {
+        Text(title)
+            .gridColumnAlignment(.trailing)
+            .font(.subheadline)
+            .lineLimit(1)
+            .minimumScaleFactor(0.3)
+    }
+}
+
+
+
 struct ContentView: View {
-    @State var row1 = Color.green
-    @State var row2 = Color.blue
-    @State var row3 = Color.pink
+    // MAYBE NEED TO USE MY EXACT LEADING LABEL TYPE HERE
+    @State var common = Color.yellow
     @FocusState.Binding var focTag: Int?  // used to hide numeric keypad
 
     // repeat a few variations on picker configuration to replicate something
     // like my original problem app
     var body: some View {
-        ScrollView {
-            Grid(alignment: .centerFirstTextBaseline, verticalSpacing: 12) {
-                GridRow() {
-                    Text("Preview")
-                    Text("Picker")
-                    Text("Other column")  // original has three columns
-                        .font(.body)
-                }.font(.title2)
-                
-                GridRow(alignment: .center) {
-                    BootView(bootColor: $row1)
-                        .gridColumnAlignment(.trailing)
-                        .frame(width: 80, height: 120)
-                    ColorPicker("", selection: $row1)
-                        .focused($focTag, equals: 1)
-                        .labelsHidden() // vital to stop right-alignment
-                        .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
-                        .gridCellColumns(2)
-                }
-                
-                GridRow(alignment: .center) {
-                    BootView(bootColor: $row2)
-                        .frame(width: 80, height: 120)
-                    HStack {
-                        ColorPicker("", selection: $row2)
-                            .focused($focTag, equals: 2)
-                            .labelsHidden() // vital to stop right-alignment
-                            .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
-                        Spacer()
-                            .onTapGesture {
-                                focTag = nil
+        /*GeometryReader { geometry in
+            Group {*/
+                HStack(spacing: 0) {
+                    // one big boot to side of scroller, replicates Purrticles having a SpriteKit hosted here
+                    BootView(bootColor: $common)
+                        .frame(width: 400/*geometry.size.width/0.3*/)
+                    
+                    ScrollView {
+                        Grid(alignment: .centerFirstTextBaseline, verticalSpacing: 12) {
+                            GridRow() {
+                                Text("Preview")
+                                Text("Picker")
+                                Text("Other column")  // original has three columns
+                                    .font(.body)
+                            }.font(.title2)
+                            
+                            GridRow(alignment: .center) {
+                                ControlLabelView(title: "Row1")
+                                ColorPicker("", selection: $common)
+                                    .focused($focTag, equals: 1)
+                                    .labelsHidden() // vital to stop right-alignment
+                                    .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
+                                    .gridCellColumns(2)
                             }
-                    }
-                        .gridCellColumns(2)
-                }
-                Divider()
-                GridRow(alignment: .center) {
-                    BootView(bootColor: $row3)
-                        .frame(width: 80, height: 120)
-                        .contentShape(Rectangle()) // Ensures the whole cell is tappable
-                        .onTapGesture {
-                            focTag = nil
+                            
+                            GridRow(alignment: .center) {
+                                ControlLabelView(title: "Row2")
+                                HStack {
+                                    ColorPicker("", selection: $common)
+                                        .focused($focTag, equals: 2)
+                                        .labelsHidden() // vital to stop right-alignment
+                                        .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
+                                    Spacer()
+                                        .onTapGesture {
+                                            focTag = nil
+                                        }
+                                }
+                                .gridCellColumns(2)
+                            }
+                            Divider()
+                            GridRow(alignment: .center) {
+                                ControlLabelView(title: "Row3")
+                                HStack {
+                                    ColorPicker("", selection: $common)
+                                        .focused($focTag, equals: 3)
+                                        .labelsHidden() // vital to stop right-alignment
+                                        .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
+                                    Spacer()
+                                        .onTapGesture {
+                                            focTag = nil
+                                        }
+                                }
+                                .gridCellColumns(2)
+                            }
                         }
-                    HStack {
-                        ColorPicker("", selection: $row3)
-                            .focused($focTag, equals: 3)
-                            .labelsHidden() // vital to stop right-alignment
-                            .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
-                        Spacer()
-                            .onTapGesture {
-                                focTag = nil
-                            }
-                    }
-                        .gridCellColumns(2)
-                }
-            }
-        }
+                    } // scroll
+                    .frame(maxWidth: .infinity)  // fill rest of width
+                } // top HStack
+           /* }  // Group
+        } // top GeometryReader
+            */
     }
 }
 

@@ -16,3 +16,11 @@ BootView
 ContentView
 - added ScrollView with nested Grid and three row with slight differences
 - WellyBoot drawn in  first column using color picked from adjacent cell
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Try putting a big pane to left
+2024-12-28
+
+ContentView
+- copy in original's use of GeometryReader but comment out as rendering weirdly all over
+- add one big BootView to left with single color changed by all pickers

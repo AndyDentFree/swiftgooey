@@ -24,3 +24,14 @@ Try putting a big pane to left
 ContentView
 - copy in original's use of GeometryReader but comment out as rendering weirdly all over
 - add one big BootView to left with single color changed by all pickers
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Wrap in GeometryReader and Group
+2024-12-29
+
+ContentView
+- fix silly bug needing to multiply GeometryReader width (was dividing by 0.3)
+- add overall Group
+- isLandscape extension added to check GeometryReader so use different proportion in landscape
+ 

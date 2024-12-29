@@ -23,19 +23,18 @@ struct ControlLabelView: View {
 
 
 struct ContentView: View {
-    // MAYBE NEED TO USE MY EXACT LEADING LABEL TYPE HERE
     @State var common = Color.yellow
     @FocusState.Binding var focTag: Int?  // used to hide numeric keypad
 
     // repeat a few variations on picker configuration to replicate something
     // like my original problem app
     var body: some View {
-        /*GeometryReader { geometry in
-            Group {*/
+        GeometryReader { geometry in
+            Group {
                 HStack(spacing: 0) {
                     // one big boot to side of scroller, replicates Purrticles having a SpriteKit hosted here
                     BootView(bootColor: $common)
-                        .frame(width: 400/*geometry.size.width/0.3*/)
+                        .frame(width: geometry.size.width * (geometry.size.isLandscape ? 0.6 : 0.4))
                     
                     ScrollView {
                         Grid(alignment: .centerFirstTextBaseline, verticalSpacing: 12) {
@@ -88,9 +87,9 @@ struct ContentView: View {
                     } // scroll
                     .frame(maxWidth: .infinity)  // fill rest of width
                 } // top HStack
-           /* }  // Group
+           }  // Group
         } // top GeometryReader
-            */
+            
     }
 }
 
@@ -102,3 +101,7 @@ struct Content_Previews: PreviewProvider {
     }
 }
 
+
+extension CGSize {
+    public var isLandscape: Bool {get{ width > height}}
+}

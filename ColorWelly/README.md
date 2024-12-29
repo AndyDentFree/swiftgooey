@@ -18,6 +18,8 @@ That screen comprises:
 ### Attempts
 - simple with three rows fails to replicate the bug. All pickers work.
 - putting a single big view to left of Grid still works
+- using our custom view for label to left of ColorPicker 
+- adding overall Group and GeometryReader around entire View, so can split up space proportionally
 
 [p1]: https://www.touchgram.com/purrticles
 [p2]: https://www.reddit.com/r/SwiftUI/comments/1hl4htd/ipad_colorpicker_bug_not_responding_to_taps_on/

@@ -20,6 +20,31 @@ struct ControlLabelView: View {
     }
 }
 
+// use on a Grid eg:
+// .modifier(GridOverallTap(tapAction: { focTag = nil }))
+struct GridOverallTap: ViewModifier {
+    let tapAction: ()->()
+    
+#if os(iOS)
+    func body(content: Content) -> some View {
+        if #available(iOS 18.0, *) {
+            return content
+                .contentShape(Rectangle()) // Ensures the whole row is tappable
+                .onTapGesture {
+                    tapAction()
+                }
+        } else {  // only added in iOS18 onwards
+            return content
+        }
+    }
+    
+#else
+    func body(content: Content) -> some View {
+        content
+    }
+#endif
+}
+
 
 // this relates to the Purrticles app combination of
 // Main DocWindow, containing
@@ -28,6 +53,7 @@ struct ControlLabelView: View {
 
 struct ContentView: View {
     @State var common = Color.yellow
+    @State var scratchEntry: String = ""
     @FocusState.Binding var focTag: Int?  // used to hide numeric keypad
     @State private var controlsTabSelection = 1  // start on controls, also used to pick control mode in landscape
     
@@ -89,6 +115,7 @@ struct ContentView: View {
                                             .labelsHidden() // vital to stop right-alignment
                                             .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
                                         Spacer()
+                                            .contentShape(Rectangle())
                                             .onTapGesture {
                                                 focTag = nil
                                             }
@@ -96,15 +123,19 @@ struct ContentView: View {
                                     .gridCellColumns(2)
                                 }
                                 Divider()
+                                GridRow {
+                                    ControlLabelView(title: "Enter")
+                                    Text("to see keyboard ")
+                                    TextField("scratch", text: $scratchEntry)
+                                        .focused($focTag, equals: 99)
+                                }
+                                Divider()
                                 // bunch of dummy rows in case being big enough to scroll was a factor
                                 ForEach(0..<40, id: \.self) { index in
                                     GridRow {
                                         ControlLabelView(title: "Dummy Row \(index + 1)")
-                                        Text("Additional data for Row \(index + 1)")
-                                    }
-                                    .background(Color.blue.opacity(0.2)) // Optional: background for visibility
-                                    .onTapGesture {
-                                        focTag = nil
+                                        Text("Additional data for ")
+                                        Text("Row \(index + 1)")
                                     }
                                 }
                                 Divider()
@@ -123,10 +154,14 @@ struct ContentView: View {
                                     .gridCellColumns(2)
                                 }
                             }  // Grid
-                            .contentShape(Rectangle()) // Ensures the whole row is tappable
-                            .onTapGesture {
+                            .modifier( GridOverallTap(tapAction: {
                                 focTag = nil
-                            }
+                                var focMsg = "no focus"
+                                if let prevFoc = focTag {
+                                    focMsg = "most recent focus is \(prevFoc)"
+                                }
+                                print("tap action on grid triggered. " + focMsg)
+                            }) )
                         } // scroll
                     } // VStack with tabs around scroller
                     .frame(maxWidth: .infinity)  // fill rest of width

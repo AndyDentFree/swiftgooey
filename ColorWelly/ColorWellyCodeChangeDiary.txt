@@ -50,3 +50,12 @@ Force scrolling
 
 ContentView
 - generate 40 dummy rows in the middle
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Add overall tap to TRIGGER BUG!!
+2024-12-30
+
+ContentView
+- put an onTapGesure on the outer Grid
+- made the onTapGesture conditional for iOS 18 > using a View Modifier
+- added a TextField row so can see keyboard to prove focus change working

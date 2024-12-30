@@ -35,3 +35,10 @@ ContentView
 - add overall Group
 - isLandscape extension added to check GeometryReader so use different proportion in landscape
  
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Wrap in VStack with tabs above
+2024-12-29
+
+ContentView
+- added VStack with Picker as an ignored control, above the ScrollView

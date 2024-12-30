@@ -34,7 +34,7 @@ ContentView
 - fix silly bug needing to multiply GeometryReader width (was dividing by 0.3)
 - add overall Group
 - isLandscape extension added to check GeometryReader so use different proportion in landscape
- 
+
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Wrap in VStack with tabs above
@@ -42,3 +42,11 @@ Wrap in VStack with tabs above
 
 ContentView
 - added VStack with Picker as an ignored control, above the ScrollView
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Force scrolling
+2024-12-30
+
+ContentView
+- generate 40 dummy rows in the middle

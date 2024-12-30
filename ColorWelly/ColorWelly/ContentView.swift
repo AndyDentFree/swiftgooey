@@ -96,6 +96,17 @@ struct ContentView: View {
                                     .gridCellColumns(2)
                                 }
                                 Divider()
+                                // bunch of dummy rows in case being big enough to scroll was a factor
+                                ForEach(0..<40, id: \.self) { index in
+                                    GridRow {
+                                        ControlLabelView(title: "Dummy Row \(index + 1)")
+                                        Text("Additional data for Row \(index + 1)")
+                                    }
+                                    .background(Color.blue.opacity(0.2)) // Optional: background for visibility
+                                    .onTapGesture {
+                                        focTag = nil
+                                    }
+                                }
                                 Divider()
                                 GridRow(alignment: .center) {
                                     ControlLabelView(title: "Row last")
@@ -112,6 +123,9 @@ struct ContentView: View {
                                     .gridCellColumns(2)
                                 }
                             }  // Grid
+                            .contentShape(Rectangle()) // Ensures the whole row is tappable
+                            .onTapGesture {
+                                focTag = nil
                             }
                         } // scroll
                     } // VStack with tabs around scroller

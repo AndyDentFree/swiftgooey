@@ -21,6 +21,7 @@ That screen comprises:
 - using our custom view for label to left of ColorPicker 
 - adding overall Group and GeometryReader around entire View, so can split up space proportionally
 - adding "tabs" as segmented picker control above scrolling controls
+- add enough rows to the scrollview that it would require scrolling to show all 
 
 [p1]: https://www.touchgram.com/purrticles
 [p2]: https://www.reddit.com/r/SwiftUI/comments/1hl4htd/ipad_colorpicker_bug_not_responding_to_taps_on/

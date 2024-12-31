@@ -58,4 +58,15 @@ Add overall tap to TRIGGER BUG!!
 ContentView
 - put an onTapGesure on the outer Grid
 - made the onTapGesture conditional for iOS 18 > using a View Modifier
-- added a TextField row so can see keyboard to prove focus change working
+- added a TextField row so can see keyboard to prove focus change working- generate 40 dummy rows in the middle
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Massively simplify back to still show bug but with fewer controls
+2024-12-31
+
+ContentView
+- remove use of ControlLabelView
+- remove BootView to left
+- remove tabs (may put back later to choose different styles of fix)
+- remove extra dummy rows loop
+- remove isLandscape extension

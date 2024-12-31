@@ -23,6 +23,8 @@ That screen comprises:
 - adding "tabs" as segmented picker control above scrolling controls
 - add enough rows to the scrollview that it would require scrolling to show all 
 - **found it** adding an onTapGesture on the outside Grid causes the problem
+- simplified back to earlier 3 rows, without view alongside, GeometryReader or tabs - still replicable and with a TextEdit can see how focus is not changed by ColorPicker
+
 
 ### Demonstrating focus change
 Adding a TextField to one of the rows will display the inbuilt keyboard. Changing focus will dismiss the keyboard.

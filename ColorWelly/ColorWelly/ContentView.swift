@@ -63,7 +63,7 @@ struct ContentView: View {
             Spacer()
             Picker("", selection: $demoTabSelection) {
                 Text("Bug on older OS").tag(1)
-                Text("No tap older OS").tag(2)
+                Text("No dismiss older OS").tag(2)
                 Text("Final Fix").tag(3)
             }
             .pickerStyle(SegmentedPickerStyle())
@@ -88,13 +88,10 @@ struct ContentView: View {
                             print("Tap action on grid triggered. " + focMsg)
                         }) )
                 default:
-                    BootRack(row1: $row1, row2: $row2, otherHeading: backgroundTappable() ? "tappable as OS 18" : "untappable", focTag: $focTag)
-                        .simultaneousGesture(TapGesture().onEnded {
-                            focTag = nil
-                            print("Tap action on grid triggered, using simultaneousGesture")
-                        })
+                    BootRackPerAreaTappable(row1: $row1, row2: $row2, otherHeading: "Tappable by row", focTag: $focTag, bgndTapAction: {focTag = nil})
                 }  // tab switch
             } // scroll
+            .padding(.horizontal)
         }  // VStack inc tabs
         .frame(maxWidth: .infinity)  // fill rest of width
     }

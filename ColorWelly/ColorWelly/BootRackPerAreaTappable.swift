@@ -1,17 +1,19 @@
 //
-//  BootRack.swift
+//  BootRackPerAreaTappable.swift
 //  ColorWelly
 //
 //  Created by Andrew Dent on 1/1/2025.
 //
 
+
 import SwiftUI
 
-struct BootRack: View {
+struct BootRackPerAreaTappable: View {
     @Binding var row1: Color
     @Binding var row2: Color
     var otherHeading: String
     @FocusState.Binding var focTag: Int?  // used to hide numeric keypad
+    let bgndTapAction: ()->()
     @State var scratchEntry: String = ""
     
     var body: some View {
@@ -29,46 +31,58 @@ struct BootRack: View {
                     .gridColumnAlignment(.leading)
             }
             .font(.title2)
+            .onTapGesture {
+                bgndTapAction()
+            }
             
             GridRow(alignment: .center) {
                 BootView(bootColor: $row1)
                     .frame(width: 80, height: 120)
                     .background(Color.gray.opacity(0.3))
-                ColorPicker("", selection: $row1)
-                    .focused($focTag, equals: 1)  // has no effect
-                    .labelsHidden() // vital to stop right-alignment
-                    .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
-                    .gridCellColumns(2)
+                ZStack {
+                    Color(.systemBackground)  // cannot use .clear here to be able to tap
+                        .gridCellUnsizedAxes([.horizontal, .vertical])
+                        .onTapGesture {
+                            bgndTapAction()
+                        }
+                    ColorPicker("", selection: $row1)
+                        .focused($focTag, equals: 1)  // has no effect
+                        .labelsHidden() // vital to stop right-alignment
+                        .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
+                }
+                .gridCellColumns(2)
             }
             
             GridRow(alignment: .center) {
                 BootView(bootColor: $row2)
                     .frame(width: 80, height: 120)
                     .background(Color.gray.opacity(0.3))
-                HStack {
+                ZStack {
+                    Color(.systemBackground)  // cannot use .clear here to be able to tap
+                        .gridCellUnsizedAxes([.horizontal, .vertical])
+                        .onTapGesture {
+                            bgndTapAction()
+                        }
                     ColorPicker("", selection: $row2)
                         .focused($focTag, equals: 2) // has no effect
                         .labelsHidden() // vital to stop right-alignment
                         .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
-                    Spacer()
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            focTag = nil
-                            print("HStack next to 2nd ColorPicker tapped")
-                        }
                 }
                 .gridCellColumns(2)
             }
             Divider()
             GridRow {
                 Text("Enter to see keyboard ")
-                    .gridColumnAlignment(.trailing)
+                    .gridColumnAlignment(.leading)
                     .gridCellColumns(2)
+                    .onTapGesture {
+                        bgndTapAction()
+                    }
                 TextField("scratch", text: $scratchEntry)
+                    .gridColumnAlignment(.leading)
                     .focused($focTag, equals: 99)
             }
-            
-            GridRow(alignment: .top) {
+            GridRow() {
                 Spacer()
                     .frame(width: 1, height: 1)  // min spec Spacer just to ensure column used, width of column comes from other content above, height by wrapping Text
                 Text("Tapping in the text entry field above will cause an onscreen keyboard to appear. We want to be able to tap any whitespace area to dismiss the keyboard")
@@ -77,20 +91,9 @@ struct BootRack: View {
                     .fixedSize(horizontal: false, vertical: true)  // wraps as needed
                     .multilineTextAlignment(.leading)
             }
-            // context of the original problem is using numeric keyboards that lack a Done option to dismiss, so tapping needed
+            .onTapGesture {
+                bgndTapAction()
+            }
         }  // Grid
-    }
-}
-
-
-// copy of BootRack but special GridRow
-
-
-struct Bootrack_Previews: PreviewProvider {
-    static var previews: some View {
-        @State var row1 = Color.pink
-        @State var row2 = Color.purple
-        @FocusState var previewFocus: Int?
-        return     BootRack(row1: $row1, row2: $row2, otherHeading: "blah", focTag: $previewFocus)
     }
 }

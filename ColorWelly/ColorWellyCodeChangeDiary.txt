@@ -74,9 +74,10 @@ ContentView
 
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Demonstrate variations with tab picker at top
+Final fix & Demonstrate variations with tab picker at top
 2025-01-01
 
 ContentView
 - factor out BootRack to create Grid so can add modifiers to it to show different scenarios
 - add tabs to pick three different scenarios
+- BootRack duplicated to BootRackPerAreaTappable to test fix by ZStack

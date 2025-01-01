@@ -24,7 +24,9 @@ That screen comprises:
 - add enough rows to the scrollview that it would require scrolling to show all 
 - **found it** adding an onTapGesture on the outside Grid causes the problem
 - simplified back to earlier 3 rows, without view alongside, GeometryReader or tabs - still replicable and with a TextEdit can see how focus is not changed by ColorPicker
-
+- Setup even simpler demo with 2 rows of colorpicker plus a TextEdit row but with tabs to choose different gesture scenarios
+    - trying a SimultaneousGesture in final scenario still broken on iPadOS 16 & 17
+    - it further breaks the ability to tap in the TextField and see the keyboard, immediately dismissing focus
 
 ### Demonstrating focus change
 Adding a TextField to one of the rows will display the inbuilt keyboard. Changing focus will dismiss the keyboard.
@@ -33,6 +35,8 @@ This proves that the whole of grid tap gesture, which is now disabled for iOS16 
 
 ### Second Problem - ColorPicker fails to set focus
 Noted with the addition of a text field is that despite `focused($focTag, equals: 1)` tapping the picker doesn't change focus and so doesn't cancel the keyboard.
+
+This was not resolved at any point, is probably _desired behaviour_.
 
 [p1]: https://www.touchgram.com/purrticles
 [p2]: https://www.reddit.com/r/SwiftUI/comments/1hl4htd/ipad_colorpicker_bug_not_responding_to_taps_on/

@@ -70,3 +70,13 @@ ContentView
 - remove tabs (may put back later to choose different styles of fix)
 - remove extra dummy rows loop
 - remove isLandscape extension
+
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Demonstrate variations with tab picker at top
+2025-01-01
+
+ContentView
+- factor out BootRack to create Grid so can add modifiers to it to show different scenarios
+- add tabs to pick three different scenarios

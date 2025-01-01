@@ -33,74 +33,69 @@ struct GridOverallTap: ViewModifier {
 #endif
 }
 
+// little helper so labels in ContentView indicate expected behaviour
+#if os(iOS)
+func backgroundTappable() -> Bool {
+    if #available(iOS 18.0, *) {
+        return true
+    } else {
+        return false
+    }
+}
+#else
+func backgroundTappable() -> Bool {
+    true
+}
+#endif
+
+
 
 struct ContentView: View {
     @State var row1 = Color.green
     @State var row2 = Color.blue
-    @State var scratchEntry: String = ""
     @FocusState.Binding var focTag: Int?  // used to hide numeric keypad
-    @State private var controlsTabSelection = 1  // start on controls, also used to pick control mode in landscape
+    @State private var demoTabSelection = 1
     
-    // repeat a few variations on picker configuration to replicate something
-    // like my original problem app
+    
     var body: some View {
-        ScrollView {
-            Grid(alignment: .centerFirstTextBaseline, verticalSpacing: 12) {
-                GridRow() {
-                    Text("Boots")
-                        .gridColumnAlignment(.trailing)
-                    
-                    Text("Picker")
-                        .gridColumnAlignment(.leading)
-                    
-                    Text("Other column")  // original has three columns
-                        .font(.body)
-                        .gridColumnAlignment(.leading)
-                }.font(.title2)
-                
-                GridRow(alignment: .center) {
-                    BootView(bootColor: $row1)
-                        .frame(width: 80, height: 120)
-                    ColorPicker("", selection: $row1)
-                        .focused($focTag, equals: 1)  // has no effect
-                        .labelsHidden() // vital to stop right-alignment
-                        .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
-                        .gridCellColumns(2)
-                }
-                
-                GridRow(alignment: .center) {
-                    BootView(bootColor: $row2)
-                        .frame(width: 80, height: 120)
-                    HStack {
-                        ColorPicker("", selection: $row2)
-                            .focused($focTag, equals: 2) // has no effect
-                            .labelsHidden() // vital to stop right-alignment
-                            .frame(minWidth: 44, maxWidth: .infinity, minHeight: 44, alignment: .leading) // left-aligns instead of centred
-                        Spacer()
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                focTag = nil
+        VStack {
+            Text("Choose a tab to see the bug on iPadOS 16 & 17, a 'fix' which loses background taps to dismiss the keyboard or, hopefully, a general fix")
+            Spacer()
+            Picker("", selection: $demoTabSelection) {
+                Text("Bug on older OS").tag(1)
+                Text("No tap older OS").tag(2)
+                Text("Final Fix").tag(3)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding(.horizontal)
+            ScrollView {
+                switch demoTabSelection {
+                case 1:
+                    BootRack(row1: $row1, row2: $row2, otherHeading: "tap to dismiss keyboard", focTag: $focTag)
+                        .contentShape(Rectangle()) // Ensures the whole row is tappable
+                        .onTapGesture {  // prevents ColorPickers working on iPadOS 16 & 17
+                            focTag = nil
+                            print("Tap action on grid triggered, in mode where ColorPicker doesn't work on iPadOS 16 & 17.")
+                        }
+                case 2:
+                    BootRack(row1: $row1, row2: $row2, otherHeading: backgroundTappable() ? "tappable as OS 18" : "untappable", focTag: $focTag)
+                        .modifier( GridOverallTap(tapAction: {
+                            focTag = nil
+                            var focMsg = "no focus"
+                            if let prevFoc = focTag {
+                                focMsg = "most recent focus is \(prevFoc)"
                             }
-                    }
-                    .gridCellColumns(2)
-                }
-                Divider()
-                GridRow {
-                    Text("Enter")
-                    Text("to see keyboard ")
-                    TextField("scratch", text: $scratchEntry)
-                        .focused($focTag, equals: 99)
-                }
-            }  // Grid
-            .modifier( GridOverallTap(tapAction: {
-                focTag = nil
-                var focMsg = "no focus"
-                if let prevFoc = focTag {
-                    focMsg = "most recent focus is \(prevFoc)"
-                }
-                print("tap action on grid triggered. " + focMsg)
-            }) )
-        } // scroll
+                            print("Tap action on grid triggered. " + focMsg)
+                        }) )
+                default:
+                    BootRack(row1: $row1, row2: $row2, otherHeading: backgroundTappable() ? "tappable as OS 18" : "untappable", focTag: $focTag)
+                        .simultaneousGesture(TapGesture().onEnded {
+                            focTag = nil
+                            print("Tap action on grid triggered, using simultaneousGesture")
+                        })
+                }  // tab switch
+            } // scroll
+        }  // VStack inc tabs
         .frame(maxWidth: .infinity)  // fill rest of width
     }
 }

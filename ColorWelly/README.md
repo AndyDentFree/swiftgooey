@@ -1,5 +1,5 @@
 # ColorWelly
-Sample to explore a [bug][p2] affecting the [Purrticles][p1] interface on iPad **only** using iPadOS versions 16.x and 17.x.
+Sample to explore a [bug][p2] affecting the [Purrticles][p1] interface on iPad and iPhone **only** using OS versions 16.x and 17.x.
 
 The two `ColorPicker` controls are almost impossible to tap - most of the time they fail to react and don't show the popover control.
 
@@ -32,6 +32,7 @@ That screen comprises:
     - it further breaks the ability to tap in the TextField and see the keyboard, immediately dismissing focus
 - putting the `.onTapGesture` on each individual `GridRow` has the same bug as putting it on the overall `Grid` so that's not a solution
 - Using a ZStack to put a Color section with tapGesture behind is a lot more work but is **a robust fix for all OS**
+- proved using final sample that it is also an iOS bug.
 
 ### Demonstrating focus change
 Adding a TextField to one of the rows will display the inbuilt keyboard. Changing focus will dismiss the keyboard.

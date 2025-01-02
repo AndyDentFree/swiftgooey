@@ -2,7 +2,7 @@
 //  BootRack.swift
 //  ColorWelly
 //
-//  Created by Andrew Dent on 1/1/2025.
+//  Created by Andy Dent on 1/1/2025.
 //
 
 import SwiftUI
@@ -62,7 +62,6 @@ struct BootRack: View {
             Divider()
             GridRow {
                 Text("Enter to see keyboard ")
-                    .gridColumnAlignment(.trailing)
                     .gridCellColumns(2)
                 TextField("scratch", text: $scratchEntry)
                     .focused($focTag, equals: 99)

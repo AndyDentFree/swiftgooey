@@ -2,7 +2,7 @@
 //  BootRackPerAreaTappable.swift
 //  ColorWelly
 //
-//  Created by Andrew Dent on 1/1/2025.
+//  Created by Andy Dent on 1/1/2025.
 //
 
 
@@ -40,7 +40,7 @@ struct BootRackPerAreaTappable: View {
                     .frame(width: 80, height: 120)
                     .background(Color.gray.opacity(0.3))
                 ZStack {
-                    Color(.systemBackground)  // cannot use .clear here to be able to tap
+                    Color.systemBackground  // cannot use Color(.clear) here to be able to tap
                         .gridCellUnsizedAxes([.horizontal, .vertical])
                         .onTapGesture {
                             bgndTapAction()
@@ -58,7 +58,7 @@ struct BootRackPerAreaTappable: View {
                     .frame(width: 80, height: 120)
                     .background(Color.gray.opacity(0.3))
                 ZStack {
-                    Color(.systemBackground)  // cannot use .clear here to be able to tap
+                    Color.systemBackground  // cannot use Color(.clear) here to be able to tap
                         .gridCellUnsizedAxes([.horizontal, .vertical])
                         .onTapGesture {
                             bgndTapAction()
@@ -73,13 +73,11 @@ struct BootRackPerAreaTappable: View {
             Divider()
             GridRow {
                 Text("Enter to see keyboard ")
-                    .gridColumnAlignment(.leading)
                     .gridCellColumns(2)
                     .onTapGesture {
                         bgndTapAction()
                     }
                 TextField("scratch", text: $scratchEntry)
-                    .gridColumnAlignment(.leading)
                     .focused($focTag, equals: 99)
             }
             GridRow() {

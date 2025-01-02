@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		427682C62D25119B00363EBD /* BootRack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427682C52D25119B00363EBD /* BootRack.swift */; };
 		427682C82D25502400363EBD /* BootRackPerAreaTappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427682C72D25502400363EBD /* BootRackPerAreaTappable.swift */; };
+		427682CA2D26821600363EBD /* ColorCrossPlatformExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427682C92D26821600363EBD /* ColorCrossPlatformExtensions.swift */; };
 		4288A7032D1C3BC6004F71B9 /* ColorWellyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4288A7022D1C3BC6004F71B9 /* ColorWellyApp.swift */; };
 		4288A7052D1C3BC6004F71B9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4288A7042D1C3BC6004F71B9 /* ContentView.swift */; };
 		4288A7072D1C3BC7004F71B9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4288A7062D1C3BC7004F71B9 /* Assets.xcassets */; };
@@ -20,6 +21,7 @@
 /* Begin PBXFileReference section */
 		427682C52D25119B00363EBD /* BootRack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootRack.swift; sourceTree = "<group>"; };
 		427682C72D25502400363EBD /* BootRackPerAreaTappable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootRackPerAreaTappable.swift; sourceTree = "<group>"; };
+		427682C92D26821600363EBD /* ColorCrossPlatformExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCrossPlatformExtensions.swift; sourceTree = "<group>"; };
 		4288A6FF2D1C3BC6004F71B9 /* ColorWelly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorWelly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4288A7022D1C3BC6004F71B9 /* ColorWellyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWellyApp.swift; sourceTree = "<group>"; };
 		4288A7042D1C3BC6004F71B9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				427682C52D25119B00363EBD /* BootRack.swift */,
 				427682C72D25502400363EBD /* BootRackPerAreaTappable.swift */,
 				4288A7132D1C4715004F71B9 /* BootView.swift */,
+				427682C92D26821600363EBD /* ColorCrossPlatformExtensions.swift */,
 				4288A7082D1C3BC7004F71B9 /* ColorWelly.entitlements */,
 				4288A7022D1C3BC6004F71B9 /* ColorWellyApp.swift */,
 				4288A7042D1C3BC6004F71B9 /* ContentView.swift */,
@@ -153,6 +156,7 @@
 			files = (
 				427682C82D25502400363EBD /* BootRackPerAreaTappable.swift in Sources */,
 				4288A7142D1C4715004F71B9 /* BootView.swift in Sources */,
+				427682CA2D26821600363EBD /* ColorCrossPlatformExtensions.swift in Sources */,
 				4288A7052D1C3BC6004F71B9 /* ContentView.swift in Sources */,
 				4288A7032D1C3BC6004F71B9 /* ColorWellyApp.swift in Sources */,
 				4288A7122D1C46C6004F71B9 /* WellyBoot.swift in Sources */,

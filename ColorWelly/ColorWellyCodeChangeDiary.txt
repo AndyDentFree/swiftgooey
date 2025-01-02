@@ -72,7 +72,6 @@ ContentView
 - remove isLandscape extension
 
 
-
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Final fix & Demonstrate variations with tab picker at top
 2025-01-01
@@ -81,3 +80,17 @@ ContentView
 - factor out BootRack to create Grid so can add modifiers to it to show different scenarios
 - add tabs to pick three different scenarios
 - BootRack duplicated to BootRackPerAreaTappable to test fix by ZStack
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Ensure builds and runs on macOS so can confirm fix doesn't break Mac
+2025-01-02
+
+ColorCrossPlatformExtensions.swift
+- added
+
+BootRackPerAreaTappable
+- use Color.systemBackground extension, instead of relying on Color(.systemBackground) iOS-specific 
+
+Minor cleanups
+- comment author names
+- "Multiple alignments specified for grid column 0" fixed by removing extra .gridColumnAlignment

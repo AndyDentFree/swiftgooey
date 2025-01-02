@@ -2,7 +2,7 @@
 //  BootView.swift
 //  ColorWelly
 //
-//  Created by Andrew Dent on 25/12/2024.
+//  Created by Andy Dent on 25/12/2024.
 //
 
 import SwiftUI

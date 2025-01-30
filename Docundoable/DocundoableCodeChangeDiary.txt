@@ -1,0 +1,7 @@
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Creation
+2025-01-30
+Created basic project as MultiPlatform SwiftUI document-based app
+

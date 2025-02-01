@@ -101,6 +101,19 @@ The simple approach is taken of using Codable to encode as JSON.
 
 Rather than having possible complications between FileDocument and Codable, a simple helper struct is used so synthesis occurs to trivially encode it as JSON.
 
+## Explorations
+Note that shake (triggered by cmd-ctrl-Z on simulator) is only available  whilst editing the text field and prompts with an Undo/Redo Typing alert that is a smart chunk of editing.
+
+
+### Basic Undo/Redo
+After commit db8e304 _Add undo/redo using UndoManager_ testing the app
+
+- Undo menu appears with undo/redo titles that remain generic "Undo" and "Redo"
+- undo and redo appear to be disabled correctly when stacks empty
+- each individual character edit of note is separate undoable item
+- redo stack not emptied by moving on to new focus (this seems different to Purrticles) so if you have undone say 4 actions across 3 controls, you can redo them all
+- shake undo actions (see above) appear as yet another undoable item on our menu! (expected Redo) - seems the shake integration in TextField is seen as a positive editing action by generic UM as if you were typing, not integrated into stack.
+
 [p1]: https://www.touchgram.com/purrticles
 
 [a1]: https://developer.apple.com/documentation/swiftui/filedocument

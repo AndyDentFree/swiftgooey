@@ -21,6 +21,10 @@ Using UndoManager, an undo can be triggered:
 
 **But** when focus is lost from the control, it seems to reset the UndoManager state, so `canUndo` becomes false.
 
+This project explores that problem in a vastly-simplified sample.
+
+See **Explorations** section below.
+
 ## Common Gotchas
 
 ### Wanting UndoMager in a doc
@@ -57,23 +61,27 @@ struct MainDocWindow: View {
     @Environment(\.undoManager) var undoManager
     var body: some View {
 ...    
-		.toolbar {
-			#if os(iOS)
-			ToolbarItem(placement: .navigationBarTrailing) {
-				Menu {
-					Button(action: undo) {
-						Label(undoManager?.undoMenuItemTitle ?? "", systemImage: "arrow.uturn.backward")
-					}
-					.disabled(!(undoManager?.canUndo ?? false))
-					Button(action: redo) {
-						Label(undoManager?.redoMenuItemTitle ?? "", systemImage: "arrow.uturn.forward")
-					}
-					.disabled(!(undoManager?.canRedo ?? false))
-				} label: {
-					Image(systemName: "arrow.uturn.backward.circle")
-				}
-				.menuStyle(BorderlessButtonMenuStyle())
-			}
+        .toolbar {
+            #if os(iOS)
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Menu {
+                    Button(action: undo) {
+                        Label(undoManager?.undoMenuItemTitle ?? "", 
+                        	systemImage: "arrow.uturn.backward")
+                    }
+                    .disabled(!(undoManager?.canUndo ?? false))
+                    Button(action: redo) {
+                        Label(undoManager?.redoMenuItemTitle ?? "",
+                        	 systemImage: "arrow.uturn.forward")
+                    }
+                    .disabled(!(undoManager?.canRedo ?? false))
+                } label: {
+                    Image(systemName: "arrow.uturn.backward.circle")
+                }
+                .menuStyle(BorderlessButtonMenuStyle())
+            }
+            #endif
+        }       
 ```
 
 However, as noted in [this SO answer][so2]

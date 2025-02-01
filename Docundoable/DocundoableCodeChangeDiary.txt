@@ -36,3 +36,12 @@ info.plist
   - UTTypeConformsTo
     - single public.plain-text replaced with public.data & public.content
   - UTTypeDescription changed to "Docundoable binary document"
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Add undo/redo using UndoManager
+2025-02-01
+
+ContentView
+- add undoManager env property
+- add toolbar items for iOS using undoManager for titles and actions

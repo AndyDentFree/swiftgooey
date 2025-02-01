@@ -88,7 +88,10 @@ Even worse, if you have a change event or callback from your own `undo` command 
 
 I ended up completely ignoring `canUndo` and the `undoMenuTitle` and implementing my own.
 
+## File I/O
+The simple approach is taken of using Codable to encode as JSON.
 
+Rather than having possible complications between FileDocument and Codable, a simple helper struct is used so synthesis occurs to trivially encode it as JSON.
 
 [p1]: https://www.touchgram.com/purrticles
 

@@ -5,3 +5,34 @@ Creation
 2025-01-30
 Created basic project as MultiPlatform SwiftUI document-based app
 
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Basic editing with binary doc save/load
+2025-01-30..31
+
+ControlFocusTag
+StepperNumView 
+PlatformHelpers
+- added (Copied from Purrticles & simplified)
+
+DocundoableDocument
+- DocStore helper struct added to store same props as we edit
+- UTType changed to test.aussie.docundoable
+- default text prop replaced by count, amount, note
+- init(...) basic members added
+- init(ReadConfiguration) - filled in stub to use JSONDecoder and DocStore
+- filewrapper(WriteConfiguration) - filled in stub to use JSONEncoder and DocStore
+
+
+ContentView
+- add @FocusState focTag
+- add a VStack with two instances of StepperNumView & update TextEditor with style & focus
+
+info.plist
+- LSItemContentTypes 
+  - doctype changed to test.aussie.docundoable
+  - NSUbiquitousDocumentUserActivityType suffix changed to .document
+- UTImportedTypeDeclarations
+  - UTTypeConformsTo
+    - single public.plain-text replaced with public.data & public.content
+  - UTTypeDescription changed to "Docundoable binary document"

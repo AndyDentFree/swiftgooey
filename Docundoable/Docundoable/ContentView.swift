@@ -2,19 +2,45 @@
 //  ContentView.swift
 //  Docundoable
 //
-//  Created by Andrew Dent on 30/1/2025.
+//  Created by Andy Dent on 30/1/2025.
 //
 
 import SwiftUI
 
 struct ContentView: View {
     @Binding var document: DocundoableDocument
+    @FocusState var focTag: ControlFocusTag?  // used to hide keypad, set by StepperNumView & TextEditor
 
     var body: some View {
-        TextEditor(text: $document.text)
+        VStack {
+            Spacer()
+            Text("Testbed for controls and undo/redo")
+                .font(.headline)
+            Text("especially when edit numbers using keyboard")
+                .font(.subheadline)
+            Spacer()
+            HStack {
+                Spacer()
+                StepperNumView<UInt>(title: "Count", tag: .count, value: $document.count, step: 1, focusedTag: $focTag)
+                Spacer()
+                StepperNumView<Double>(title: "Amount", tag: .amount, value: $document.amount, step: 1, focusedTag: $focTag)
+                Spacer()
+
+            }
+            Spacer()
+            TextEditor(text: $document.note)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+            .focused($focTag, equals: .note)
+        }
     }
 }
 
-#Preview {
-    ContentView(document: .constant(DocundoableDocument()))
+
+#if DEBUG
+struct StandardParticleControls_Previews: PreviewProvider {
+    static var previews: some View {
+        return ContentView(document: .constant(DocundoableDocument()))
+    }
 }
+#endif

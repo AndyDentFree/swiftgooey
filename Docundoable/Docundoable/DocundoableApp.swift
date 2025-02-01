@@ -2,7 +2,7 @@
 //  DocundoableApp.swift
 //  Docundoable
 //
-//  Created by Andrew Dent on 30/1/2025.
+//  Created by Andy Dent on 30/1/2025.
 //
 
 import SwiftUI

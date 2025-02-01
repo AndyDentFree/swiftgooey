@@ -2,7 +2,7 @@
 //  DocundoableDocument.swift
 //  Docundoable
 //
-//  Created by Andrew Dent on 30/1/2025.
+//  Created by Andy Dent on 30/1/2025.
 //
 
 import SwiftUI
@@ -10,30 +10,45 @@ import UniformTypeIdentifiers
 
 extension UTType {
     static var exampleText: UTType {
-        UTType(importedAs: "com.example.plain-text")
+        UTType(importedAs: "test.aussie.docundoable")
     }
 }
 
 struct DocundoableDocument: FileDocument {
-    var text: String
+    var count: UInt
+    var amount: Double
+    var note: String
 
-    init(text: String = "Hello, world!") {
-        self.text = text
+    init(count: UInt = 42, amount: Double = 3.14, note: String = "Hello, world!") {
+        self.count = count
+        self.amount = amount
+        self.note = note
     }
 
     static var readableContentTypes: [UTType] { [.exampleText] }
 
     init(configuration: ReadConfiguration) throws {
-        guard let data = configuration.file.regularFileContents,
-              let string = String(data: data, encoding: .utf8)
+        let decoder = JSONDecoder()
+        guard let json = configuration.file.regularFileContents,
+              let docFields = try? decoder.decode(DocStore.self, from: json)
         else {
             throw CocoaError(.fileReadCorruptFile)
         }
-        text = string
+        count = docFields.count
+        amount = docFields.amount
+        note = docFields.note
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = text.data(using: .utf8)!
-        return .init(regularFileWithContents: data)
+        let encoder = JSONEncoder()
+        let asJSON = try! encoder.encode(DocStore(count: count, amount: amount, note: note))
+        return .init(regularFileWithContents: asJSON)
     }
+}
+
+// separate helper struct so not complicating Codable synthesis with FileDocument properties
+fileprivate struct DocStore: Codable {
+    var count: UInt
+    var amount: Double
+    var note: String
 }

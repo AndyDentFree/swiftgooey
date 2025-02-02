@@ -29,10 +29,31 @@ struct ContentView: View {
 
             }
             Spacer()
-            TextEditor(text: $document.note)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-            .focused($focTag, equals: .note)
+            Spacer()
+            VStack{
+                TextEditor(text: $document.note)
+                    .background(
+                        Rectangle()
+                            .fill(Color.pink)
+                            .contentShape(Rectangle()) // Reinforces tappable area
+                    )
+                    .padding(8)
+                    .focused($focTag, equals: .note)
+            }
+            .background(Color.secondarySystemBackground)
+            .padding([.leading, .trailing, .bottom], 8)
+            .contentShape(Rectangle()) // Ensures the whole cell is tappable
+            .onTapGesture {
+                focTag = nil
+            }
+        }
+        .background(
+            Rectangle()
+                .fill(Color.clear)
+                .contentShape(Rectangle()) // Reinforces tappable area
+        )
+        .onTapGesture {
+            focTag  = nil
         }
         .toolbar {
 #if os(iOS)

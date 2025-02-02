@@ -60,3 +60,14 @@ DocundoableDocument
 - add setUndoManager func
 - for the three value properties being edited, add didSet to set Action names
 
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Add focus change by tapping background, to dismiss keyboard
+2025-02-02
+
+ContentView
+- VStack - added background with onTapGesture to nil focTag
+- added styling with a VStack and background on TextEditor to see its edges
+
+DocundoableDocument
+- no functional change but added print in didSet for count (because the pseudo-property oldValue is not loggable in debugger)

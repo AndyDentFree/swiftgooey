@@ -23,13 +23,20 @@ fileprivate class DocHelper {
 struct DocundoableDocument: FileDocument {
     private var docH = DocHelper()
     var count: UInt {didSet{
-        docH.undoManager?.setActionName("count")
+        print("didSet count old=\(oldValue) new=\(count)")
+        if oldValue != count {
+            docH.undoManager?.setActionName("count")
+        }
     }}
     var amount: Double  {didSet{
-        docH.undoManager?.setActionName("amount")
+        if oldValue != amount {
+            docH.undoManager?.setActionName("amount")
+        }
     }}
     var note: String  {didSet{
-        docH.undoManager?.setActionName("note")
+        if oldValue != note {
+            docH.undoManager?.setActionName("note")
+        }
     }}
 
     init(count: UInt = 42, amount: Double = 3.14, note: String = "Hello, world!") {

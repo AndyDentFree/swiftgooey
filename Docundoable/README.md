@@ -119,16 +119,26 @@ After commit db8e304 _Add undo/redo using UndoManager_ testing the app
 - shake undo actions (see above) appear as yet another undoable item on our menu! (expected Redo) - seems the shake integration in TextField is seen as a positive editing action by generic UM as if you were typing, not integrated into stack.
 
 ### Naming undoables
-After commit LATEST _Add undo/redo naming using UndoManager in doc_ testing the app with more clarity as can see what's _intended_ to be undone/redone.
+After commit d82b027 _Add undo/redo naming using UndoManager in doc_ testing the app with more clarity as can see what's _intended_ to be undone/redone.
 
 - Still have the same behaviours as previously with the undo/redo working, being stackable_
 - Menus now have simple name changes reflecting what was changed so can see when am in a state where offering different like **Undo count** with **Redo amount**. (This proves I'd misunderstood how Redo worked, thinking it was wiped by changing which value being edited)
-- **BUG?** On at least a couple of occasions found the undo menu was still enabled after had clearly wiped out the entire stack, now visible because the name reverted to the generic _Undo_ rather than _Undo count_.
+- **BUG?** On at least a couple of occasions found the undo menu was still enabled after had clearly wiped out the entire stack, now visible because the name reverted to the generic _Undo_ rather than _Undo count_. This seems hard to reproduce though, unlike when I observed in Purrticles. Maybe related to complexity of use.
 - **BUG!** Now testing editing the centre value of the steppers by tapping and **bug seen** where the UM has apparently recorded a second undo state transition, _just for entering the edit field,_ without a visible value change, when cease editing number value, by some other operation that shifts focus.eg:
 	- count is 58 when open doc
 	- tap label to edit
 	- tap note to change focus
 	- check undo menu and it now has an enabled **Undo count**
+
+### Tap to dismiss and more didSet testing
+After commit LATEST _Add focus change by tapping background, to dismiss keyboard_ testing app 
+- Confirmed can dismiss keyboard when have gone into edit mode then tap background betwen controls.
+- Noted that showed no behavioural changes in values, so just focTag = nil has no side-effects on UndoManager
+- **BUG!** testing further with the print statement to see when `didSet` is invoked when start editing by tapping middle of steppers, testing by tapping inc button then edit, seeing logged values, including the surprise that `didSet` is invoked **twice** each time when editing:
+	- `didSet count old=55 new=56` from inc
+	- `didSet count old=56 new=56` **twice** just on entering editor (note **one** Undo is added to stack, which has no effect because no value change)
+	- `didSet count old=56 new=5` printed showing the _actual edit_ changed values
+	- `didSet count old=5 new=5` printed immediately after as _just more noise_
 
 
 [p1]: https://www.touchgram.com/purrticles

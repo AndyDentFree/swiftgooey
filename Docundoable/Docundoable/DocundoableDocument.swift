@@ -14,10 +14,23 @@ extension UTType {
     }
 }
 
+// stash some mutable state we want to update without triggering struct mutation
+fileprivate class DocHelper {
+    var undoManager: UndoManager? = nil  // owned by a View and passed in via useUndo(manager)
+
+}
+
 struct DocundoableDocument: FileDocument {
-    var count: UInt
-    var amount: Double
-    var note: String
+    private var docH = DocHelper()
+    var count: UInt {didSet{
+        docH.undoManager?.setActionName("count")
+    }}
+    var amount: Double  {didSet{
+        docH.undoManager?.setActionName("amount")
+    }}
+    var note: String  {didSet{
+        docH.undoManager?.setActionName("note")
+    }}
 
     init(count: UInt = 42, amount: Double = 3.14, note: String = "Hello, world!") {
         self.count = count
@@ -43,6 +56,10 @@ struct DocundoableDocument: FileDocument {
         let encoder = JSONEncoder()
         let asJSON = try! encoder.encode(DocStore(count: count, amount: amount, note: note))
         return .init(regularFileWithContents: asJSON)
+    }
+    
+    func setUndoManager(_ um: UndoManager?) {
+        docH.undoManager = um
     }
 }
 

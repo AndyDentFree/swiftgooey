@@ -3,6 +3,10 @@ Sample to explore nuances of Document-based apps, specifically using the struct 
 
 Got sufficiently frustrated during the development of [Purrticles][p1] with its complex editing environment that wanted both to explore the alternatives and have a sample I coud share to accompany articles/rants about the issues.
 
+Note that in the following discussions may abbreviate UndoManager to UM.
+
+This readme includes a growing discussion at bottom of testing as different twists on UM use tried.
+
 [Purrticles][p1] 
 
 ## Nested views vs Undo
@@ -42,10 +46,10 @@ struct DocumentView: View {
     var body: some View {
         MyDocumentEditor(document: document)
         .onAppear {
-            document.setUndoManager(undoManager: undoManager)
+            document.setUndoManager(undoManager)
         }
-        .onChange(of: undoManager) { newManager in
-            document.setUndoManager(undoManager: newManager)
+        .onChange(of: undoManager) { _ in
+            document.setUndoManager(undoManager)
         }
     }
 }
@@ -113,6 +117,19 @@ After commit db8e304 _Add undo/redo using UndoManager_ testing the app
 - each individual character edit of note is separate undoable item
 - redo stack not emptied by moving on to new focus (this seems different to Purrticles) so if you have undone say 4 actions across 3 controls, you can redo them all
 - shake undo actions (see above) appear as yet another undoable item on our menu! (expected Redo) - seems the shake integration in TextField is seen as a positive editing action by generic UM as if you were typing, not integrated into stack.
+
+### Naming undoables
+After commit LATEST _Add undo/redo naming using UndoManager in doc_ testing the app with more clarity as can see what's _intended_ to be undone/redone.
+
+- Still have the same behaviours as previously with the undo/redo working, being stackable_
+- Menus now have simple name changes reflecting what was changed so can see when am in a state where offering different like **Undo count** with **Redo amount**. (This proves I'd misunderstood how Redo worked, thinking it was wiped by changing which value being edited)
+- **BUG?** On at least a couple of occasions found the undo menu was still enabled after had clearly wiped out the entire stack, now visible because the name reverted to the generic _Undo_ rather than _Undo count_.
+- **BUG!** Now testing editing the centre value of the steppers by tapping and **bug seen** where the UM has apparently recorded a second undo state transition, _just for entering the edit field,_ without a visible value change, when cease editing number value, by some other operation that shifts focus.eg:
+	- count is 58 when open doc
+	- tap label to edit
+	- tap note to change focus
+	- check undo menu and it now has an enabled **Undo count**
+
 
 [p1]: https://www.touchgram.com/purrticles
 

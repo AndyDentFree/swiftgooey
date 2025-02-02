@@ -55,6 +55,13 @@ struct ContentView: View {
             }
 #endif
         }
+        .onAppear {
+            document.setUndoManager(undoManager)
+        }
+        .onChange(of: undoManager) {_ in
+            document.setUndoManager(undoManager)
+            // ignoring deprecation warning for now because really annoying to have conditional available
+        }
     }
 }
 

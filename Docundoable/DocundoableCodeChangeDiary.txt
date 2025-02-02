@@ -45,3 +45,18 @@ Add undo/redo using UndoManager
 ContentView
 - add undoManager env property
 - add toolbar items for iOS using undoManager for titles and actions
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Add undo/redo naming using UndoManager in doc
+2025-02-02
+
+ContentView
+- add .onAppear and .oncChange to pass UndoManager to document
+
+DocundoableDocument
+- add DocHelper to contain undoManager env property
+- add docH property to refer to this mutable state
+- add setUndoManager func
+- for the three value properties being edited, add didSet to set Action names
+

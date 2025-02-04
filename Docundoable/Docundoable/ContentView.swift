@@ -11,7 +11,7 @@ struct ContentView: View {
     @Binding var document: DocundoableDocument
     @FocusState var focTag: ControlFocusTag?  // used to hide keypad, set by StepperNumView & TextEditor
     @Environment(\.undoManager) var undoManager
-
+    
     var body: some View {
         VStack {
             Spacer()
@@ -26,8 +26,24 @@ struct ContentView: View {
                 Spacer()
                 StepperNumView<Double>(title: "Amount", tag: .amount, value: $document.amount, step: 1, focusedTag: $focTag)
                 Spacer()
-
             }
+#if os(iOS)
+            .toolbar {  // one toolbar on any of the views adds these buttons to all keyboard that pop up even on views like Note's TextEditor further down
+                if focTag != nil {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Default") {
+                            document.setDefault(focTag)
+                            focTag = nil
+                        }
+                        Spacer()
+                        Button("Done") {
+                            focTag = nil
+                        }
+                    }
+                }
+            }
+#endif
             Spacer()
             Spacer()
             VStack{
@@ -61,7 +77,7 @@ struct ContentView: View {
                 Menu {
                     Button(action: { undoManager?.undo() }) {
                         Label(undoManager?.undoMenuItemTitle ?? "",
-                                systemImage: "arrow.uturn.backward")
+                              systemImage: "arrow.uturn.backward")
                     }
                     .disabled(!(undoManager?.canUndo ?? false))
                     Button(action:  { undoManager?.redo() }) {
@@ -75,15 +91,15 @@ struct ContentView: View {
                 .menuStyle(BorderlessButtonMenuStyle())
             }
 #endif
-        }
-        .onAppear {
-            document.setUndoManager(undoManager)
-        }
-        .onChange(of: undoManager) {_ in
-            document.setUndoManager(undoManager)
-            // ignoring deprecation warning for now because really annoying to have conditional available
-        }
     }
+    .onAppear {
+        document.setUndoManager(undoManager)
+    }
+    .onChange(of: undoManager) {_ in
+        document.setUndoManager(undoManager)
+        // ignoring deprecation warning for now because really annoying to have conditional available
+    }
+}
 }
 
 

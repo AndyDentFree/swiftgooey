@@ -38,15 +38,15 @@ struct DocundoableDocument: FileDocument {
             docH.undoManager?.setActionName("note")
         }
     }}
-
+    
     init(count: UInt = 42, amount: Double = 3.14, note: String = "Hello, world!") {
         self.count = count
         self.amount = amount
         self.note = note
     }
-
+    
     static var readableContentTypes: [UTType] { [.exampleText] }
-
+    
     init(configuration: ReadConfiguration) throws {
         let decoder = JSONDecoder()
         guard let json = configuration.file.regularFileContents,
@@ -67,6 +67,23 @@ struct DocundoableDocument: FileDocument {
     
     func setUndoManager(_ um: UndoManager?) {
         docH.undoManager = um
+    }
+    
+    mutating func setDefault(_ tag: ControlFocusTag?) {
+        guard let ftag = tag else {return}
+        switch ftag {
+        case .count:
+            count = 0
+            
+        case .amount:
+            amount = 0.0
+            
+        case .note:
+            note = "Hi there you lovely tester"
+            
+        case .unfocused:
+            break
+        }
     }
 }
 

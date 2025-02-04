@@ -131,8 +131,8 @@ After commit d82b027 _Add undo/redo naming using UndoManager in doc_ testing the
 	- check undo menu and it now has an enabled **Undo count**
 
 ### Tap to dismiss and more didSet testing
-After commit LATEST _Add focus change by tapping background, to dismiss keyboard_ testing app 
-- Confirmed can dismiss keyboard when have gone into edit mode then tap background betwen controls.
+After commit 53eafc1 _Add focus change by tapping background, to dismiss keyboard_ testing app 
+- Confirmed can dismiss keyboard when have gone into edit mode then tap background between controls.
 - Noted that showed no behavioural changes in values, so just focTag = nil has no side-effects on UndoManager
 - **BUG!** testing further with the print statement to see when `didSet` is invoked when start editing by tapping middle of steppers, testing by tapping inc button then edit, seeing logged values, including the surprise that `didSet` is invoked **twice** each time when editing:
 	- `didSet count old=55 new=56` from inc

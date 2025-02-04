@@ -71,3 +71,14 @@ ContentView
 
 DocundoableDocument
 - no functional change but added print in didSet for count (because the pseudo-property oldValue is not loggable in debugger)
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Add focus change and setting by buttons on keyboard
+2025-02-02
+
+DocundoableDocument
+- setDefault added
+
+ContentView
+- added a toolbar to add keyboard  buttons for Default and Done that set focTag = nil & invoked doc updater

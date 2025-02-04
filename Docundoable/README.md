@@ -5,7 +5,7 @@ Got sufficiently frustrated during the development of [Purrticles][p1] with its 
 
 Note that in the following discussions may abbreviate UndoManager to UM.
 
-This readme includes a growing discussion at bottom of testing as different twists on UM use tried.
+This readme includes a growing discussion at bottom of testing as different twists on UM use tried. In summary, there are multiple buggy behaviours with UndoManager when you have a nested editor as shown here in `StepperNumView`.
 
 [Purrticles][p1] 
 
@@ -129,16 +129,25 @@ After commit d82b027 _Add undo/redo naming using UndoManager in doc_ testing the
 	- tap label to edit
 	- tap note to change focus
 	- check undo menu and it now has an enabled **Undo count**
+- further note on that buggy extra undo when enter edit mode - it wipes the **Redo** state _and_ the name of the actions.
+- this _only_ occurs when entering the TextField in `StepperNumView` and not the `TextEditor`
 
+	    
 ### Tap to dismiss and more didSet testing
 After commit 53eafc1 _Add focus change by tapping background, to dismiss keyboard_ testing app 
 - Confirmed can dismiss keyboard when have gone into edit mode then tap background between controls.
 - Noted that showed no behavioural changes in values, so just focTag = nil has no side-effects on UndoManager
-- **BUG!** testing further with the print statement to see when `didSet` is invoked when start editing by tapping middle of steppers, testing by tapping inc button then edit, seeing logged values, including the surprise that `didSet` is invoked **twice** each time when editing:
+- **BUG! (same?)** testing further with the print statement to see when `didSet` is invoked when start editing by tapping middle of steppers, testing by tapping inc button then edit, seeing logged values, including the surprise that `didSet` is invoked **twice** each time when editing those fields. This may relate to the change in Undo/Redo state and name noticed in previous commit:
 	- `didSet count old=55 new=56` from inc
 	- `didSet count old=56 new=56` **twice** just on entering editor (note **one** Undo is added to stack, which has no effect because no value change)
 	- `didSet count old=56 new=5` printed showing the _actual edit_ changed values
 	- `didSet count old=5 new=5` printed immediately after as _just more noise_
+
+
+### Keyboard attached buttons to dismiss & setDefault
+After commit 2589922 _Add focus change and setting by buttons on keyboard_ testing app
+- no changes noted in behaviour
+- pressing the **Default** button on `count` shows the `didSet` print being hit, as expected, as an explicit set of the value occurs. 
 
 
 [p1]: https://www.touchgram.com/purrticles

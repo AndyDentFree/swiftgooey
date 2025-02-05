@@ -82,3 +82,28 @@ DocundoableDocument
 
 ContentView
 - added a toolbar to add keyboard  buttons for Default and Done that set focTag = nil & invoked doc updater
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Remove UndoManager entirely and manage ourself
+2025-02-04..05
+
+ContentView
+- remove undoManager & event code to pass to doc
+- use document methods instead of undoManager for undo/redo
+- use document properties instead of undoManager for menu enabling and titles
+
+DocundoableDocument
+- remove setUndoManager
+- canUndo, canRedo added
+- undo, redo funcs added to use un/redoStack
+- un/redoMenuTitle added
+- private apply(Doable) added that cases on tag knowing which props to set
+- DocHelper
+  - remove undoManager
+  - add undoStack & redoStack
+  - add isUndoing flag
+  - add smart append(Doable)
+  
+Doable.SwiftUI
+- added with protocol Doable and family of structs implementing

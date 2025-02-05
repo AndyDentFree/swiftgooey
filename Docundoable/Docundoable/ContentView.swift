@@ -10,7 +10,6 @@ import SwiftUI
 struct ContentView: View {
     @Binding var document: DocundoableDocument
     @FocusState var focTag: ControlFocusTag?  // used to hide keypad, set by StepperNumView & TextEditor
-    @Environment(\.undoManager) var undoManager
     
     var body: some View {
         VStack {
@@ -75,31 +74,24 @@ struct ContentView: View {
 #if os(iOS)
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
-                    Button(action: { undoManager?.undo() }) {
-                        Label(undoManager?.undoMenuItemTitle ?? "",
+                    Button(action: { document.undo() }) {
+                        Label(document.undoMenuItemTitle,
                               systemImage: "arrow.uturn.backward")
                     }
-                    .disabled(!(undoManager?.canUndo ?? false))
-                    Button(action:  { undoManager?.redo() }) {
-                        Label(undoManager?.redoMenuItemTitle ?? "",
+                    .disabled(!(document.canUndo))
+                    Button(action:  { document.redo() }) {
+                        Label(document.redoMenuItemTitle,
                               systemImage: "arrow.uturn.forward")
                     }
-                    .disabled(!(undoManager?.canRedo ?? false))
+                    .disabled(!(document.canRedo))
                 } label: {
                     Image(systemName: "arrow.uturn.backward.circle")
                 }
                 .menuStyle(BorderlessButtonMenuStyle())
             }
 #endif
+        }
     }
-    .onAppear {
-        document.setUndoManager(undoManager)
-    }
-    .onChange(of: undoManager) {_ in
-        document.setUndoManager(undoManager)
-        // ignoring deprecation warning for now because really annoying to have conditional available
-    }
-}
 }
 
 

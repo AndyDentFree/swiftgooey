@@ -16,29 +16,52 @@ extension UTType {
 
 // stash some mutable state we want to update without triggering struct mutation
 fileprivate class DocHelper {
-    var undoManager: UndoManager? = nil  // owned by a View and passed in via useUndo(manager)
-
+    var undoStack = [any Doable]()
+    var redoStack = [any Doable]()
+    var isUndoing = false
+    func append(_ doable: any Doable) {
+        if isUndoing {
+            redoStack.append(doable)
+        } else {
+            undoStack.append(doable)
+        }
+    }
 }
+
+fileprivate let defaultUndoTitle = "Undo"
+fileprivate let defaultRedoTitle = "Redo"
+
 
 struct DocundoableDocument: FileDocument {
     private var docH = DocHelper()
+    
     var count: UInt {didSet{
         print("didSet count old=\(oldValue) new=\(count)")
         if oldValue != count {
-            docH.undoManager?.setActionName("count")
+            docH.append(DoableUInt(.count, oldValue))
         }
     }}
     var amount: Double  {didSet{
         if oldValue != amount {
-            docH.undoManager?.setActionName("amount")
+            docH.append(DoableDouble(.amount, oldValue))
         }
     }}
     var note: String  {didSet{
         if oldValue != note {
-            docH.undoManager?.setActionName("note")
+            docH.append(DoableString(.note, oldValue))
         }
     }}
-    
+    var undoMenuItemTitle: String {get{
+        guard let doable = docH.undoStack.last else {return defaultUndoTitle}
+        return "Undo \(doable.name)"
+    }}
+    var redoMenuItemTitle: String  {get{
+        guard let doable = docH.redoStack.last else {return defaultRedoTitle}
+        return "Redo \(doable.name)"
+    }}
+    var canUndo: Bool {get{ !docH.undoStack.isEmpty }}
+    var canRedo: Bool {get{ !docH.redoStack.isEmpty }}
+
     init(count: UInt = 42, amount: Double = 3.14, note: String = "Hello, world!") {
         self.count = count
         self.amount = amount
@@ -65,10 +88,6 @@ struct DocundoableDocument: FileDocument {
         return .init(regularFileWithContents: asJSON)
     }
     
-    func setUndoManager(_ um: UndoManager?) {
-        docH.undoManager = um
-    }
-    
     mutating func setDefault(_ tag: ControlFocusTag?) {
         guard let ftag = tag else {return}
         switch ftag {
@@ -81,6 +100,31 @@ struct DocundoableDocument: FileDocument {
         case .note:
             note = "Hi there you lovely tester"
             
+        case .unfocused:
+            break
+        }
+    }
+    
+    mutating func undo() {
+        docH.isUndoing = true
+        apply(doableStack: &docH.undoStack)
+        docH.isUndoing = false
+    }
+    
+    mutating func redo() {
+        assert(!docH.isUndoing, "undo() should be atomic and set isUndoing=false prior exit")
+        apply(doableStack: &docH.redoStack)
+    }
+    
+    private mutating func apply(doableStack: inout [any Doable]) {
+        guard let doable = doableStack.popLast() else {return}
+        switch doable.tag {
+        case .count:
+            count = doable.asUInt()
+        case .amount:
+            amount = doable.asDouble()
+        case .note:
+            note = doable.asString()
         case .unfocused:
             break
         }

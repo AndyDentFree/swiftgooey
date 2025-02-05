@@ -151,7 +151,7 @@ After commit 2589922 _Add focus change and setting by buttons on keyboard_ testi
 
 
 ### Replace UndoManager entirely
-After commit LATEST _Remove UndoManager entirely and manage ourself_ testing app to prove works as desired.
+After commit 9cd2b46 _Remove UndoManager entirely and manage ourself_ testing app to prove works as desired.
 - all undo/redo behaviour works as when using UM and it behaved, including redo with a different name from current undo
 - reliably disables/enabled menu items
 - titles are generic "Undo"/"Redo" only when disabled

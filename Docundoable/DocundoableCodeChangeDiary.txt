@@ -107,3 +107,22 @@ DocundoableDocument
   
 Doable.SwiftUI
 - added with protocol Doable and family of structs implementing
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Use classes for Doable as it's polymorphic behaviour
+2025-02-05
+
+Doable.swift
+- protocol Doable 
+  - changed to base class
+  - associatedtype valueType removed
+  - moved default implementations from extension to class
+- structs changed to subclasses, calling super.init
+
+
+DocundoableDocument
+- apply() - take Doable not any Doable
+- DocHelper
+  - undoStack & redoStack changed from [any Doable] to [Doable]
+  - append() - take Doable not any Doable

@@ -16,10 +16,10 @@ extension UTType {
 
 // stash some mutable state we want to update without triggering struct mutation
 fileprivate class DocHelper {
-    var undoStack = [any Doable]()
-    var redoStack = [any Doable]()
+    var undoStack = [Doable]()
+    var redoStack = [Doable]()
     var isUndoing = false
-    func append(_ doable: any Doable) {
+    func append(_ doable: Doable) {
         if isUndoing {
             redoStack.append(doable)
         } else {
@@ -116,7 +116,7 @@ struct DocundoableDocument: FileDocument {
         apply(doableStack: &docH.redoStack)
     }
     
-    private mutating func apply(doableStack: inout [any Doable]) {
+    private mutating func apply(doableStack: inout [Doable]) {
         guard let doable = doableStack.popLast() else {return}
         switch doable.tag {
         case .count:

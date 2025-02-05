@@ -7,54 +7,41 @@
 
 import Foundation
 
-protocol Doable {
-    associatedtype valueType
-    var tag: ControlFocusTag { get }
-    var value: valueType { get }
-    var name: String { get }
+class Doable {
+    var tag: ControlFocusTag
+    var name: String { get {"\(tag)"} }
+    init(_ tag: ControlFocusTag) {
+        self.tag = tag
+    }
 
-    func asUInt() -> UInt
-    func asDouble() -> Double
-    func asString() -> String
+    func asUInt() -> UInt {0}
+    func asDouble() -> Double {0.0}
+    func asString() -> String {""}
 }
 
-struct DoableUInt: Doable {
-    typealias valueType = UInt
-    var tag: ControlFocusTag
+class DoableUInt: Doable {
     var value: UInt
     init(_ tag: ControlFocusTag, _ value: UInt) {
-        self.tag = tag
         self.value = value
+        super.init(tag)
     }
-    func asUInt() -> UInt { value }
+    override func asUInt() -> UInt { value }
 }
 
-struct DoableDouble: Doable {
-    typealias valueType = Double
-    var tag: ControlFocusTag
+class DoableDouble: Doable {
     var value: Double
     init(_ tag: ControlFocusTag, _ value: Double) {
-        self.tag = tag
         self.value = value
+        super.init(tag)
     }
-    func asDouble() -> Double { value }
+    override func asDouble() -> Double { value }
 }
 
-struct DoableString: Doable {
-    typealias valueType = String
-    var tag: ControlFocusTag
+class DoableString: Doable {
     var value: String
     init(_ tag: ControlFocusTag, _ value: String) {
-        self.tag = tag
         self.value = value
+        super.init(tag)
     }
-    func asString() -> String { value }
-}
-
-// default implementations
-extension Doable {
-    func asUInt() -> UInt { 0 }
-    func asDouble() -> Double { 0.0 }
-    func asString() -> String { "" }
-    var name: String { get { "\(tag)"} }
+    override func asString() -> String { value }
 }

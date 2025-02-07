@@ -61,12 +61,13 @@ struct ContentView: View {
             .onTapGesture {
                 focTag = nil
             }
-        }
+        }  // top vstack
         .background(
             Rectangle()
                 .fill(Color.clear)
                 .contentShape(Rectangle()) // Reinforces tappable area
         )
+        .focusedSceneValue(\.activeDocument, $document) // inject the current document for commands
         .onTapGesture {
             focTag  = nil
         }
@@ -91,7 +92,16 @@ struct ContentView: View {
             }
 #endif
         }
-    }
+        .onAppear {
+            #if os(macOS)
+            // DispatchQueue.main.async so view hierarchy is ready.
+            DispatchQueue.main.async {
+                self.focTag = .note  // default is that one of the steppers has focus which is a bit weird
+            }
+            #endif
+        }
+
+    }  // body
 }
 
 

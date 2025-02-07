@@ -13,5 +13,9 @@ struct DocundoableApp: App {
         DocumentGroup(newDocument: DocundoableDocument()) { file in
             ContentView(document: file.$document)
         }
+        .commands{
+            // mostly for macOS
+            EditMenuCommands()
+        }
     }
 }

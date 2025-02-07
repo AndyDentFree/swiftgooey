@@ -9,6 +9,7 @@ This readme includes a growing discussion at bottom of testing as different twis
 
 [Purrticles][p1] 
 
+
 ## Nested views vs Undo
 
 ### Combination control with an ephemeral TextField
@@ -28,6 +29,7 @@ Using UndoManager, an undo can be triggered:
 This project explores that problem in a vastly-simplified sample.
 
 See **Explorations** section below.
+
 
 ## Common Gotchas
 
@@ -100,12 +102,32 @@ Even worse, if you have a change event or callback from your own `undo` command 
 
 I ended up completely ignoring `canUndo` and the `undoMenuTitle` and implementing my own.
 
+
 ## File I/O
 The simple approach is taken of using Codable to encode as JSON.
 
 Rather than having possible complications between FileDocument and Codable, a simple helper struct is used so synthesis occurs to trivially encode it as JSON.
 
-## Explorations
+
+## Menu Commands on macOS
+After the explorations below resulted in a robust iOS solution, turned my attention to macOS and of course we have standard **Edit** menu Undo and Redo without the toolbar. So, somehow, these need hooking up. This is complicated by a macOS SwiftUI document app being automatically multi-window.
+
+[This Hacking with Swift article][hws2] talks about using the UndoManager and focuses on getting it available correctly in a multi-window Mac. That's not helpful for _avoiding_ UndoManager and a little scary if it implies we _must__ use UM.
+
+### Making active doc available to menu commands
+The command definitions, if in a separate file, need to know the current _active_ document aka viewModel. This [StackOverflow answer][so3] neatly covers that using `@FocusedValue` and injecting from the view with `.focusedSceneValue`.
+
+However, because we want to call mutable funcs, a `@FocusedBinding` is needed.
+
+### Edit menu item replacements
+The [standard Edit menu][a3] has Undo and Redo already.
+
+We want somehow to _connect_ those to our code, so titles can be changed and we can act on the right document.
+
+Apple's [Article Accelerator sample][a4] shows customising them in the `Scene` attached to the `Window`. For a document-based app, our `Scene` contains a `DocumentGroup` which also accepts a `.commands` to specify the `CommandBuilder`. To get the current document into that builder, the `.focusedSceneValue` approach as above has to  be used.
+
+
+## Explorations - Detailed testing of UndoManager & Alternatives
 Note that shake (triggered by cmd-ctrl-Z on simulator) is only available  whilst editing the text field and prompts with an Undo/Redo Typing alert that is a smart chunk of editing.
 
 
@@ -156,13 +178,21 @@ After commit 9cd2b46 _Remove UndoManager entirely and manage ourself_ testing ap
 - reliably disables/enabled menu items
 - titles are generic "Undo"/"Redo" only when disabled
 
+### Use classes for Doable
+There's enough abstraction being done in the `Doable` structs that implement the protocol, that it seems cleaner to convert them to classes. The `undoStack` and `redoStack` have to manage them as references boxing structs anyway.
+
+So this final _exploration_ is just that code refactoring, commit 3589aad, with testing to confirm no silly bugs introduced.
 
 [p1]: https://www.touchgram.com/purrticles
 
 [a1]: https://developer.apple.com/documentation/swiftui/filedocument
 [a2]: https://developer.apple.com/documentation/foundation/undomanager
+[a3]: https://developer.apple.com/design/human-interface-guidelines/the-menu-bar#Edit-menu
+[4]: https://developer.apple.com/tutorials/app-dev-training/customizing-menus-with-commands-and-shortcuts
 
 [so1]: https://stackoverflow.com/questions/63919607/capturing-undomanager-from-swiftui-environment
 [so2]: https://stackoverflow.com/questions/60647857/undomanagers-canundo-property-not-updating-in-swiftui
+[so3]: https://stackoverflow.com/a/72954378/53870
 
 [hws1]: https://www.hackingwithswift.com/forums/macos/undomanager-tinydraw-hws-and-view-onappear/11359
+[hws2]: https://www.hackingwithswift.com/forums/macos/swiftui-app-life-cycle-undo-redo-and-menu-bar-items/7771

@@ -34,9 +34,18 @@ fileprivate let defaultRedoTitle = "Redo"
 
 struct DocundoableDocument: FileDocument {
     private var docH = DocHelper()
+#if DEBUG
+    var instanceID: String {get{  // unique per copy, for easy logging to detect different paths
+        withUnsafePointer(to: self) { pointer in
+            return "\(pointer)"
+        }
+    }}
+#endif
     
     var count: UInt {didSet{
-        print("didSet count old=\(oldValue) new=\(count)")
+        #if DEBUG
+        print("didSet count old=\(oldValue) new=\(count) doc \(instanceID)")
+        #endif
         if oldValue != count {
             docH.append(DoableUInt(.count, oldValue))
         }

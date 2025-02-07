@@ -78,6 +78,8 @@ Add focus change and setting by buttons on keyboard
 2025-02-02
 
 DocundoableDocument
+
+
 - setDefault added
 
 ContentView
@@ -120,9 +122,30 @@ Doable.swift
   - moved default implementations from extension to class
 - structs changed to subclasses, calling super.init
 
-
 DocundoableDocument
 - apply() - take Doable not any Doable
 - DocHelper
   - undoStack & redoStack changed from [any Doable] to [Doable]
   - append() - take Doable not any Doable
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Add commands so edit menu in macOS works
+2025-02-06..07
+
+DocundoableDocument.swift
+- ActiveDocumentKey struct added
+- FocusedValues extension added using ActiveDocumentKey
+- added debugging logic for printing doc ID
+
+MenuCommands.swit
+- added with struct MenuCommands and helpers
+  ActiveDocumentKey
+  FocusedValues extension providing activeDocument
+
+ContentView
+- .onAppear added so focus set to note, otherwise has stepper label editor
+- set .focusedSceneValue pushing doc binding so avail to menu commands
+
+DocUndoableApp
+- added commands to scene

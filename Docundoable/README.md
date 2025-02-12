@@ -5,9 +5,7 @@ Got sufficiently frustrated during the development of [Purrticles][p1] with its 
 
 Note that in the following discussions may abbreviate UndoManager to UM.
 
-This readme includes a growing discussion at bottom of testing as different twists on UM use tried. In summary, there are multiple buggy behaviours with UndoManager when you have a nested editor as shown here in `StepperNumView`.
-
-[Purrticles][p1] 
+This readme includes a growing discussion at bottom of testing as different twists on UM use tried. In summary, there are multiple buggy behaviours with UndoManager when you have a nested editor as shown here in `StepperNumView` (screenshots at end).
 
 
 ## Nested views vs Undo
@@ -182,6 +180,23 @@ After commit 9cd2b46 _Remove UndoManager entirely and manage ourself_ testing ap
 There's enough abstraction being done in the `Doable` structs that implement the protocol, that it seems cleaner to convert them to classes. The `undoStack` and `redoStack` have to manage them as references boxing structs anyway.
 
 So this final _exploration_ is just that code refactoring, commit 3589aad, with testing to confirm no silly bugs introduced.
+
+
+
+## StepperNumView in action
+
+### Docundoable editing a stepper value
+Tapping the center label puts it into edit mode. Note the added **Default** and **Done** buttons. These not only enhance the numeric keyboard but trigger another corner-case with focus updates as discussed in the explorations above.
+
+![Screenshot of app with keyboard visible and insertion point in the middle of a stepper label, showing that number is being edited](img/DocUndoablesWithKeyboard.png "Docundoable test app in the middle of editing a number")
+
+
+### [Purrticles][p1] UI
+Screenshot of the app in which had the original problem. In the "Full" mode has 35 of these controls on the view.
+
+![Part of the XCode-like view of Purrticles](img/Purrticles_complexUI.png "Purrticles showing some of the scrollable control view, with a preview of particles above")
+
+
 
 [p1]: https://www.touchgram.com/purrticles
 

@@ -104,7 +104,7 @@ I ended up completely ignoring `canUndo` and the `undoMenuTitle` and implementin
 ## File I/O
 The simple approach is taken of using Codable to encode as JSON.
 
-Rather than having possible complications between FileDocument and Codable, a simple helper struct is used so synthesis occurs to trivially encode it as JSON.
+Rather than having possible complications between FileDocument and Codable, a 3-property helper struct is used so synthesis occurs to trivially encode it as JSON.
 
 
 ## Menu Commands on macOS
@@ -203,7 +203,7 @@ Screenshot of the app in which had the original problem. In the "Full" mode has 
 [a1]: https://developer.apple.com/documentation/swiftui/filedocument
 [a2]: https://developer.apple.com/documentation/foundation/undomanager
 [a3]: https://developer.apple.com/design/human-interface-guidelines/the-menu-bar#Edit-menu
-[4]: https://developer.apple.com/tutorials/app-dev-training/customizing-menus-with-commands-and-shortcuts
+[a4]: https://developer.apple.com/tutorials/app-dev-training/customizing-menus-with-commands-and-shortcuts
 
 [so1]: https://stackoverflow.com/questions/63919607/capturing-undomanager-from-swiftui-environment
 [so2]: https://stackoverflow.com/questions/60647857/undomanagers-canundo-property-not-updating-in-swiftui

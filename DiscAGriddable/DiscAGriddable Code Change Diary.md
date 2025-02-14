@@ -6,3 +6,12 @@ DiscAGriddable code change diary entries
 
 Project created using XCode 16 as Multiplatform SwiftUI app with no tests
 
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+## Add enough UI to demonstrate bug
+2025-02-14
+
+ContentView
+- replaced default content with enough to show problem
+
+DiscAGriddable.xcodeproj
+- target dropped to iOS16 so can test on older sims

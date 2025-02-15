@@ -30,8 +30,8 @@ struct ContentView: View {
     
     var body: some View {
         ScrollView(.vertical) {
-            VStack {
-                HStack {
+//            VStack {
+                HStack(spacing: 0) {
                         DisclosureGroup("Formatting", isExpanded: $formattingExpanded) {
                             Grid(alignment: .leading, verticalSpacing: controlSpacing) {
                                 GridRow {
@@ -48,8 +48,11 @@ struct ContentView: View {
                     Rectangle()
                         .fill(.pink)
                         .frame(width: 8, height: .infinity)
+                    Circle()
+                        .fill(.green)
+                        .frame(width: 40)
                 }  // HStack
-                Spacer()
+                /*Spacer()
                     .frame(height: 40.0)
                 Rectangle()
                     .frame(maxWidth: .infinity, maxHeight: 2.0)
@@ -58,8 +61,7 @@ struct ContentView: View {
                     .frame(height: 20.0)
                 Text(sampleText)  // dependency implied on dirty flag from changing emitter params
                     .textSelection(.enabled)
-            } // outer VStack
-            .padding(.horizontal)
+            } // outer VStack*/
         }  // scroll
     }
 }

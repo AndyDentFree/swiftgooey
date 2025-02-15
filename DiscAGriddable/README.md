@@ -26,7 +26,10 @@ The hierarchy is
 
 Simplifying things by commenting out the outer A and B doesn't fix, but it's harder to see.
 
-Later version took out the outer disclosure and used an `HStack` to show expansion with a colored rect.
+Later version took out the outer disclosure and used an `HStack` to show expansion with a couple of shapes alongside:
+
+![Two partial screenshots aligned vertically showing circle truncated by expansion resizing](SimplestTwistDemo.png "Simpler view showing resize still happens")
+
 
 ## Grudge held
 This little bit of nasty UI rendering caught me when I thought I'd utterly finished with _stupid SwiftUI bugs_ after the long wrestling with Undo (see [Docundoable](../Docundoable/README.md) for that saga)

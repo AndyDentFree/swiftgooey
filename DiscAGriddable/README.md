@@ -5,9 +5,11 @@ Exists to explore fixes to an interesting gotcha I had in my MultiPlatform Swift
 ## The Problem
 With a [Grid][a2] inside the `DisclosureGroup`, toggling the group open causes a minor width expansion. Depending on the model of phone, this results in the disclosure chevrons being unpleasantly close to the trailing side, or vanishing completely off screen!
 
-The minimal amount of layout with the `Grid` shows the problem is inherently one about putting it inside a `DisclosureGroup` as seen in the recording below. Note how when Formatting is tapped, the outer chevron jumps sideways. The collapsed width is the desired layout and when the Grid is exposed, it pushes things wider.
+The minimal amount of layout with the `Grid` shows the problem is inherently one about putting it inside a `DisclosureGroup` as seen in the recording and screenshots below. Note how when Formatting is tapped, the outer chevron jumps sideways. The collapsed width is the desired layout and when the Grid is exposed, it pushes things wider.
 
-![<# alt text #>](TwistingBug.gif "Recording of tapping ")
+![Two partial screenshots aligned vertically, with a pink line showing how controls moved sideways when the Formatting group expanded](TwistingBug.png "Two screenshots with alignment to show expansion")
+
+![Gif showing the width changing when Formatting tapped](TwistingBug.gif "Recording of tapping ")
 
 ## Grudge held
 This little bit of nasty UI rendering caught me when I thought I'd utterly finished with _stupid SwiftUI bugs_ after the long wrestling with Undo (see [Docundoable](../Docundoable/README.md) for that saga)

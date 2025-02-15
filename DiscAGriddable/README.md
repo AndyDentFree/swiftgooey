@@ -32,7 +32,9 @@ Later version took out the outer disclosure and used an `HStack` to show expansi
 
 
 ## The Fix!
-Thanks to a quick comment on the [StackOverflow question][so1] - the `Spacer()` in the `GridRow` was the problem.
+Thanks to a quick answer on the [StackOverflow question][so1] - the `Spacer()` in the `GridRow` was the problem.
+
+I don't fully understand the mechanics of [Spacer][a3] _outside_ the context of a Stack view. Keeping it in there was a mistake from initial versions using a mix of stacks. If you truly need an empty cell in a grid, if we had three columns, [EmptyView][a4] would be appropriate.
 
 ## Grudge held
 This little bit of nasty UI rendering caught me when I thought I'd utterly finished with _stupid SwiftUI bugs_ after the long wrestling with Undo (see [Docundoable](../Docundoable/README.md) for that saga)
@@ -42,4 +44,6 @@ So this is grumpily-written code hence the project name.
 [p1]: https://www.touchgram.com/purrticles
 [a1]: https://developer.apple.com/documentation/swiftui/disclosuregroup
 [a2]: https://developer.apple.com/documentation/swiftui/grid
+[a3]: https://developer.apple.com/documentation/swiftui/spacer
+[a4]: https://developer.apple.com/documentation/swiftui/emptyview
 [so1]: https://stackoverflow.com/questions/79441312/a-grid-inside-a-disclosuregroup-inside-a-scrollview-causes-unwanted-expansion

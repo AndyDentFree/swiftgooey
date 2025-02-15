@@ -31,3 +31,20 @@ ContentView
 ContentView
 - outer VStack and its lower content removed so DisclosureGroup is directly inside ScrollView
 - Circle added so can see how resizing truncates
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+## FIXED!
+2025-02-15
+
+ContentView
+- remove the commented-out noise
+- remove the Spacer() in the GridRow and that fixes it!
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+## Put back nested disclosures to prove fix still works in more complex view
+2025-02-15
+
+ContentView
+- restore previous, nested DisclosureGroup in VStack
+- remove extra spacers

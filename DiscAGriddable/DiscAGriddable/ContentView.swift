@@ -29,12 +29,9 @@ struct ContentView: View {
     """
     
     var body: some View {
-        ScrollView {
+        ScrollView(.vertical) {
             VStack {
-                DisclosureGroup("Export settings", isExpanded: $controlsExpanded) {
-                    
-                    VStack(alignment: .leading, spacing: controlSpacing) {
-                        Spacer()
+                HStack {
                         DisclosureGroup("Formatting", isExpanded: $formattingExpanded) {
                             Grid(alignment: .leading, verticalSpacing: controlSpacing) {
                                 GridRow {
@@ -47,8 +44,11 @@ struct ContentView: View {
                             .padding(.horizontal)
                         }  // Formatting group
                         .padding(.horizontal, 4)
-                    }
-                }  // disclosure
+                    Spacer()
+                    Rectangle()
+                        .fill(.pink)
+                        .frame(width: 8, height: .infinity)
+                }  // HStack
                 Spacer()
                     .frame(height: 40.0)
                 Rectangle()
@@ -59,7 +59,7 @@ struct ContentView: View {
                 Text(sampleText)  // dependency implied on dirty flag from changing emitter params
                     .textSelection(.enabled)
             } // outer VStack
-            .padding()
+            .padding(.horizontal)
         }  // scroll
     }
 }

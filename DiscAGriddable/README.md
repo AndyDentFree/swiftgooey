@@ -31,6 +31,9 @@ Later version took out the outer disclosure and used an `HStack` to show expansi
 ![Two partial screenshots aligned vertically showing circle truncated by expansion resizing](SimplestTwistDemo.png "Simpler view showing resize still happens")
 
 
+## The Fix!
+Thanks to a quick comment on the [StackOverflow question][so1] - the `Spacer()` in the `GridRow` was the problem.
+
 ## Grudge held
 This little bit of nasty UI rendering caught me when I thought I'd utterly finished with _stupid SwiftUI bugs_ after the long wrestling with Undo (see [Docundoable](../Docundoable/README.md) for that saga)
 

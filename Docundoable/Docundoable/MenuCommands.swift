@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  MenuCommands.swift
 //  Docundoable
 //
 //  Created by Andy Dent on 6/2/2025.
@@ -7,23 +7,58 @@
 
 import SwiftUI
 
+@MainActor
+protocol UndoRedoStatePublisher: AnyObject {
+    func updatedState()
+}
+
+
+@MainActor
+final class MenuSceneState: ObservableObject, UndoRedoStatePublisher {
+    @Published var updates: Int = 0
+    var canUndo: Bool { sceneDoc.wrappedValue.canUndo }
+    var undoMenuItemTitle: String { sceneDoc.wrappedValue.undoMenuItemTitle }
+    var canRedo: Bool { sceneDoc.wrappedValue.canRedo }
+    var redoMenuItemTitle: String { sceneDoc.wrappedValue.redoMenuItemTitle }
+    fileprivate(set) var sceneDoc: Binding<DocundoableDocument>
+    
+    public static var activeMenuState: MenuSceneState? = nil
+    
+    init(sceneDoc: Binding<DocundoableDocument>) {
+        self.sceneDoc = sceneDoc
+        sceneDoc.wrappedValue.publishesStates(to: self)
+    }
+
+    func updatedState() {
+        updates += 1
+    }
+}
+
+
 struct EditMenuCommands: Commands {
-    @FocusedBinding(\.activeDocument) var document // from ContentView
+#if os(macOS)
+    @FocusedObject private var menuState: MenuSceneState?
+//@FocusedBinding(\.activeDocument) var document // from ContentView
+#else
+    var menuState: MenuSceneState? { MenuSceneState.activeMenuState }
+#endif
     
     var body: some Commands {
         CommandGroup(replacing: .undoRedo) {
             Button(action: {
-                document?.undo()
+                menuState?.sceneDoc.wrappedValue.undo()
             }) {
-                Text(document?.undoMenuItemTitle ?? "")
+                Text(menuState?.undoMenuItemTitle ?? "Undo")
             }
-            .disabled(!(document?.canUndo ?? false))
+            .keyboardShortcut("Z", modifiers: [.command])
+            .disabled(!((menuState?.updates ?? 0) > 0 && menuState?.canUndo ?? false))
             Button(action:  {
-                document?.redo()
+                menuState?.sceneDoc.wrappedValue.redo()
             }) {
-                Text(document?.redoMenuItemTitle ?? "")
+                Text(menuState?.redoMenuItemTitle ?? "Redo")
             }
-            .disabled(!(document?.canRedo ?? false))
+            .keyboardShortcut("Z", modifiers: [.command, .shift])
+            .disabled(!((menuState?.updates ?? 0) > 0 && menuState?.canRedo ?? false))
         }
     }
 }

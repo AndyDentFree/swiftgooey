@@ -14,7 +14,7 @@ struct DocundoableApp: App {
             ContentView(document: file.$document)
         }
         .commands{
-            // mostly for macOS
+            // mostly for macOS and iPadOS 26 on
             EditMenuCommands()
         }
     }

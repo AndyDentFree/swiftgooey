@@ -19,7 +19,11 @@ fileprivate class DocHelper {
     var undoStack = [Doable]()
     var redoStack = [Doable]()
     var isUndoing = false
+    weak var undoPublisher: UndoRedoStatePublisher? = nil
     func append(_ doable: Doable) {
+        Task { @MainActor in
+            undoPublisher?.updatedState()  // bump so it knows something changed, will pull new menu title
+        }
         if isUndoing {
             redoStack.append(doable)
         } else {
@@ -41,6 +45,10 @@ struct DocundoableDocument: FileDocument {
         }
     }}
 #endif
+    
+    func publishesStates(to pub: UndoRedoStatePublisher) {
+        docH.undoPublisher = pub
+    }
     
     var count: UInt {didSet{
         #if DEBUG

@@ -149,3 +149,27 @@ ContentView
 
 DocUndoableApp
 - added commands to scene
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+iPadOS menu support added - refactor works on macOS
+2025-12-04..08
+
+EditMenuCommands
+- added keyboard shortcuts
+
+ContentView
+- menustate added
+- init added to create menuState hooked up to doc
+- replace simple use of focusedSceneValue(doc) with focusedSceneObject(menuState) for macOS
+
+DocundoableDocument
+- undoPublisher added
+- append - update state of undoPublisher
+
+MenuCommands
+- protocol UndoRedoStatePublisher, MenuSceneState added here for now
+  EditMenuCommands
+  - replace simple use of @FocusedBinding(doc) with @FocusedObject(menuState) for macOS
+    - disabled states check menuState?.updates
+    - titles use menuState?.xxTitle

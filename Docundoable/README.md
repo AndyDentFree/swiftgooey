@@ -125,6 +125,30 @@ We want somehow to _connect_ those to our code, so titles can be changed and we 
 Apple's [Article Accelerator sample][a4] shows customising them in the `Scene` attached to the `Window`. For a document-based app, our `Scene` contains a `DocumentGroup` which also accepts a `.commands` to specify the `CommandBuilder`. To get the current document into that builder, the `.focusedSceneValue` approach as above has to  be used.
 
 
+### Edit Menu and iPadOS 26
+As of iPadOS 26, full menu support is included in the OS.
+
+People expect to see menus containing the same commands as their macOS equivalents.
+
+### Pushing to the MenuSceneState
+Idea is that, as we know when an undoable state has been updated in the `DocUndoableDocument`, it simply needs to push an update flag of some kind.
+
+We don't need to make all the 
+
+#### Debugging iPad Menus
+Initially deployment on my iPad failed to show the two menu items that were inserted in `MenuCommands` with `CommandGroup(replacing: .undoRedo)`. 
+
+No build or runtime error was recorded.
+
+Deleting the built app from the iPad and rerunning from Xcode worked. One suggestion, after I'd tried that, was to just increment the build number.  
+
+#### Keyboards and iPad Menus
+The Apple Bluetooth keyboard has an **fn** key in the front left corner, which is the same as the **Globe** key on other models.
+
+Pressing **fn-M** aka **Globe-M** will show the iPad menu bar and allow navigating it by arrow keys. This can be a lot easier than the drag-from-to gesture used to get the menu bar.
+
+See [Apple docs on keyboard shortcuts][a5].
+
 ## Explorations - Detailed testing of UndoManager & Alternatives
 Note that shake (triggered by cmd-ctrl-Z on simulator) is only available  whilst editing the text field and prompts with an Undo/Redo Typing alert that is a smart chunk of editing.
 
@@ -204,6 +228,7 @@ Screenshot of the app in which had the original problem. In the "Full" mode has 
 [a2]: https://developer.apple.com/documentation/foundation/undomanager
 [a3]: https://developer.apple.com/design/human-interface-guidelines/the-menu-bar#Edit-menu
 [a4]: https://developer.apple.com/tutorials/app-dev-training/customizing-menus-with-commands-and-shortcuts
+[a5]: https://support.apple.com/en-us/102393
 
 [so1]: https://stackoverflow.com/questions/63919607/capturing-undomanager-from-swiftui-environment
 [so2]: https://stackoverflow.com/questions/60647857/undomanagers-canundo-property-not-updating-in-swiftui

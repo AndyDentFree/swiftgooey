@@ -16,6 +16,7 @@ protocol UndoRedoStatePublisher: AnyObject {
 @MainActor
 final class MenuSceneState: ObservableObject, UndoRedoStatePublisher {
     @Published var updates: Int = 0
+    let id = UUID()  // for quick comparisons 
     var canUndo: Bool { sceneDoc.wrappedValue.canUndo }
     var undoMenuItemTitle: String { sceneDoc.wrappedValue.undoMenuItemTitle }
     var canRedo: Bool { sceneDoc.wrappedValue.canRedo }

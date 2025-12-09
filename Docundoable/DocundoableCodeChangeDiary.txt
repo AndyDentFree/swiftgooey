@@ -173,3 +173,25 @@ MenuCommands
   - replace simple use of @FocusedBinding(doc) with @FocusedObject(menuState) for macOS
     - disabled states check menuState?.updates
     - titles use menuState?.xxTitle
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+iPadOS menu support added - phase awareness on iPad
+2025-12-08
+
+PhaseHelpers added to detect changes with iPadOS
+
+
+MenuCommands.swift
+- MenuSceneState 
+  - added id for comparisons
+  - added becomeFrontmost, resignFrontmost to update class var
+
+DocundoableDocument
+- originalTitle and setOriginalTitle added for print debugging
+
+DocUndoableApp
+- call setOriginalTitle getting filename (not available via DocundoableDocument later) for debugging
+
+ContentView
+- add iOS specific code calling become/resignFrontmost

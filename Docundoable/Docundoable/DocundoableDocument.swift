@@ -20,6 +20,8 @@ fileprivate class DocHelper {
     var redoStack = [Doable]()
     var isUndoing = false
     weak var undoPublisher: UndoRedoStatePublisher? = nil
+    var originalTitle: String = ""  // mostly for easy breakpoints
+    
     func append(_ doable: Doable) {
         Task { @MainActor in
             undoPublisher?.updatedState()  // bump so it knows something changed, will pull new menu title
@@ -45,6 +47,11 @@ struct DocundoableDocument: FileDocument {
         }
     }}
 #endif
+    var originalTitle: String { docH.originalTitle }
+    
+    func setOriginalTitle(_ newValue: String) {
+        docH.originalTitle = newValue
+    }
     
     func publishesStates(to pub: UndoRedoStatePublisher) {
         docH.undoPublisher = pub

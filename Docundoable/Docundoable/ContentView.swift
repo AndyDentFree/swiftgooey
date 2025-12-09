@@ -79,6 +79,14 @@ struct ContentView: View {
         #if os(macOS)
         //.focusedSceneValue(\.activeDocument, $document) // inject the current document for commands
         .focusedSceneObject(menuState)
+        #else // workaround buggy iPadOS 26
+        .onFrontmostWindowChange(onBecomeFrontmost: {
+            print("'\(self.document.originalTitle)' became frontmost")
+            self.menuState.becomeFrontmost()
+        }, onResignFrontmost: {
+            print("'\(self.document.originalTitle)' resigned frontmost")
+            self.menuState.resignFrontmost()
+        })
         #endif
         .onTapGesture {
             focTag  = nil

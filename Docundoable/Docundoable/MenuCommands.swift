@@ -32,6 +32,15 @@ final class MenuSceneState: ObservableObject, UndoRedoStatePublisher {
     func updatedState() {
         updates += 1
     }
+    
+    func becomeFrontmost() {
+        Self.activeMenuState = self
+    }
+    
+    func resignFrontmost() {
+        guard Self.activeMenuState?.id == id else { return }
+        Self.activeMenuState = nil
+    }
 }
 
 

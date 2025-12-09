@@ -23,13 +23,17 @@ fileprivate class DocHelper {
     var originalTitle: String = ""  // mostly for easy breakpoints
     
     func append(_ doable: Doable) {
-        Task { @MainActor in
-            undoPublisher?.updatedState()  // bump so it knows something changed, will pull new menu title
-        }
         if isUndoing {
             redoStack.append(doable)
         } else {
             undoStack.append(doable)
+        }
+        updateUndoStateOnMain()
+    }
+    
+    func updateUndoStateOnMain() {
+        Task { @MainActor in
+            undoPublisher?.updatedState()
         }
     }
 }
@@ -150,8 +154,9 @@ struct DocundoableDocument: FileDocument {
         case .note:
             note = doable.asString()
         case .unfocused:
-            break
+            return
         }
+        docH.updateUndoStateOnMain()
     }
 }
 

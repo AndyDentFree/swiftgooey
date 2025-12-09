@@ -181,7 +181,6 @@ iPadOS menu support added - phase awareness on iPad
 
 PhaseHelpers added to detect changes with iPadOS
 
-
 MenuCommands.swift
 - MenuSceneState 
   - added id for comparisons
@@ -195,3 +194,18 @@ DocUndoableApp
 
 ContentView
 - add iOS specific code calling become/resignFrontmost
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+iPadOS menu support added - publishing menu updates on iPad
+2025-12-09
+
+MenuCommands.swift
+- MenuSceneState 
+  - updates removed epoch property
+  - canUn/Redo *title turned from calculated to simple @Published properties
+  - updatedState - instead of inc updates,copy all undo/redo properties from doc
+  
+DocundoableDocument
+- append(doable) - factor out task to updateUndoStateOnMain
+- apply - also call updateUndoStateOnMain

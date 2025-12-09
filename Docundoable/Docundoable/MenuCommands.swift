@@ -15,12 +15,11 @@ protocol UndoRedoStatePublisher: AnyObject {
 
 @MainActor
 final class MenuSceneState: ObservableObject, UndoRedoStatePublisher {
-    @Published var updates: Int = 0
-    let id = UUID()  // for quick comparisons 
-    var canUndo: Bool { sceneDoc.wrappedValue.canUndo }
-    var undoMenuItemTitle: String { sceneDoc.wrappedValue.undoMenuItemTitle }
-    var canRedo: Bool { sceneDoc.wrappedValue.canRedo }
-    var redoMenuItemTitle: String { sceneDoc.wrappedValue.redoMenuItemTitle }
+    let id = UUID()  // for quick comparisons
+    @Published var canUndo: Bool = false
+    @Published var undoMenuItemTitle: String = "Undo"
+    @Published var canRedo: Bool = false
+    @Published var redoMenuItemTitle: String = "Redo"
     fileprivate(set) var sceneDoc: Binding<DocundoableDocument>
     
     public static var activeMenuState: MenuSceneState? = nil
@@ -31,7 +30,10 @@ final class MenuSceneState: ObservableObject, UndoRedoStatePublisher {
     }
 
     func updatedState() {
-        updates += 1
+        canRedo = sceneDoc.wrappedValue.canRedo
+        redoMenuItemTitle = sceneDoc.wrappedValue.redoMenuItemTitle
+        canUndo = sceneDoc.wrappedValue.canUndo
+        undoMenuItemTitle = sceneDoc.wrappedValue.undoMenuItemTitle
     }
     
     func becomeFrontmost() {
@@ -61,14 +63,14 @@ struct EditMenuCommands: Commands {
                 Text(menuState?.undoMenuItemTitle ?? "Undo")
             }
             .keyboardShortcut("Z", modifiers: [.command])
-            .disabled(!((menuState?.updates ?? 0) > 0 && menuState?.canUndo ?? false))
+            .disabled(!(menuState?.canUndo ?? false))
             Button(action:  {
                 menuState?.sceneDoc.wrappedValue.redo()
             }) {
                 Text(menuState?.redoMenuItemTitle ?? "Redo")
             }
             .keyboardShortcut("Z", modifiers: [.command, .shift])
-            .disabled(!((menuState?.updates ?? 0) > 0 && menuState?.canRedo ?? false))
+            .disabled(!(menuState?.canRedo ?? false))
         }
     }
 }

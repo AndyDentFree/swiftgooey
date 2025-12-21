@@ -110,20 +110,55 @@ Rather than having possible complications between FileDocument and Codable, a 3-
 ## Menu Commands on macOS
 After the explorations below resulted in a robust iOS solution, turned my attention to macOS and of course we have standard **Edit** menu Undo and Redo without the toolbar. So, somehow, these need hooking up. This is complicated by a macOS SwiftUI document app being automatically multi-window.
 
-[This Hacking with Swift article][hws2] talks about using the UndoManager and focuses on getting it available correctly in a multi-window Mac. That's not helpful for _avoiding_ UndoManager and a little scary if it implies we _must__ use UM.
+[This Hacking with Swift article][hws2] talks about using the UndoManager and focuses on getting it available correctly in a multi-window Mac. That's not helpful for _avoiding_ UndoManager and a little scary if it implies we _must_ use UndoManager.
 
 ### Making active doc available to menu commands
 The command definitions, if in a separate file, need to know the current _active_ document aka viewModel. This [StackOverflow answer][so3] neatly covers that using `@FocusedValue` and injecting from the view with `.focusedSceneValue`.
 
 However, because we want to call mutable funcs, a `@FocusedBinding` is needed.
 
+
 ### Edit menu item replacements
 The [standard Edit menu][a3] has Undo and Redo already.
 
 We want somehow to _connect_ those to our code, so titles can be changed and we can act on the right document.
 
-Apple's [Article Accelerator sample][a4] shows customising them in the `Scene` attached to the `Window`. For a document-based app, our `Scene` contains a `DocumentGroup` which also accepts a `.commands` to specify the `CommandBuilder`. To get the current document into that builder, the `.focusedSceneValue` approach as above has to  be used.
+Apple's [Article Accelerator sample][a4] shows customising them in the `Scene` attached to the `Window`. For a document-based app, our `Scene` contains a `DocumentGroup` which also accepts a `.commands` to specify the `CommandBuilder`. To get the current document into that builder, the `.focusedSceneValue` approach as above was used. 
 
+#### macOS and menu evaluation
+The menu titles and enabling state directly evaluate the `@FocusedObject` `MenuSceneState`. This seems to be a _pull_ relationship, in that the menus can evaluate calculated properties such as `DocundoableDocument.undoMenuItemTitle`, at the time the menu is rendering.
+
+All that is needed is for a **single @Published property** to be updated, triggering a rebuild of **any** SwiftUI views (menus). This broad rebuild is normally seen as a weakness of `ObservableObject` but in this case simplifies things.
+
+### Menus and iPadOS 26
+As of iPadOS 26, full menu support is included in the OS.
+
+People expect to see menus containing the same commands as their macOS equivalents.
+
+However, these menus are implemented more like _traditional_ SwiftUI views in that they only update when they detect changes.
+
+
+
+### Pushing to the MenuSceneState
+Idea is that, as we know when an undoable state has been updated in the `DocUndoableDocument`, the `MenuSceneState` needs updating so menus react to changes in title or enabling.
+
+This is complicated by the need to have a single bound object that the menus observe, rather than relying on `@FocusedObject` or `@FocusedBinding`.
+
+#### Debugging iPad Menus
+An extra note on this because at least one weirdness worth recording.
+
+Initially deployment on my iPad failed to show the two menu items that were inserted in `MenuCommands` with `CommandGroup(replacing: .undoRedo)`. 
+
+No build or runtime error was recorded.
+
+Deleting the built app from the iPad and rerunning from Xcode worked. One suggestion, after I'd tried that, was to just increment the build number.  
+
+#### Keyboards and iPad Menus
+The Apple Bluetooth keyboard has an **fn** key in the front left corner, which is the same as the **Globe** key on other models.
+
+Pressing **fn-M** aka **Globe-M** will show the iPad menu bar and allow navigating it by arrow keys. This can be a lot easier than the drag-from-to gesture used to get the menu bar.
+
+See [Apple docs on keyboard shortcuts][a5].
 
 ## Explorations - Detailed testing of UndoManager & Alternatives
 Note that shake (triggered by cmd-ctrl-Z on simulator) is only available  whilst editing the text field and prompts with an Undo/Redo Typing alert that is a smart chunk of editing.
@@ -204,6 +239,7 @@ Screenshot of the app in which had the original problem. In the "Full" mode has 
 [a2]: https://developer.apple.com/documentation/foundation/undomanager
 [a3]: https://developer.apple.com/design/human-interface-guidelines/the-menu-bar#Edit-menu
 [a4]: https://developer.apple.com/tutorials/app-dev-training/customizing-menus-with-commands-and-shortcuts
+[a5]: https://support.apple.com/en-us/102393
 
 [so1]: https://stackoverflow.com/questions/63919607/capturing-undomanager-from-swiftui-environment
 [so2]: https://stackoverflow.com/questions/60647857/undomanagers-canundo-property-not-updating-in-swiftui

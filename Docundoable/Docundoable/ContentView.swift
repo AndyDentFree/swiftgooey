@@ -9,8 +9,17 @@ import SwiftUI
 
 struct ContentView: View {
     @Binding var document: DocundoableDocument
+    @StateObject private var menuState: MenuSceneState
     @FocusState var focTag: ControlFocusTag?  // used to hide keypad, set by StepperNumView & TextEditor
     
+    
+    init(document doc: Binding<DocundoableDocument>) {
+        _document = doc
+        _menuState = StateObject(
+            wrappedValue: MenuSceneState(sceneDoc: doc)
+        )
+    }
+
     var body: some View {
         VStack {
             Spacer()
@@ -67,7 +76,18 @@ struct ContentView: View {
                 .fill(Color.clear)
                 .contentShape(Rectangle()) // Reinforces tappable area
         )
-        .focusedSceneValue(\.activeDocument, $document) // inject the current document for commands
+        #if os(macOS)
+        //.focusedSceneValue(\.activeDocument, $document) // inject the current document for commands
+        .focusedSceneObject(menuState)
+        #else // workaround buggy iPadOS 26
+        .onFrontmostWindowChange(onBecomeFrontmost: {
+            print("'\(self.document.originalTitle)' became frontmost")
+            self.menuState.becomeFrontmost()
+        }, onResignFrontmost: {
+            print("'\(self.document.originalTitle)' resigned frontmost")
+            self.menuState.resignFrontmost()
+        })
+        #endif
         .onTapGesture {
             focTag  = nil
         }

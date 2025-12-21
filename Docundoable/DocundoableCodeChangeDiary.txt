@@ -149,3 +149,82 @@ ContentView
 
 DocUndoableApp
 - added commands to scene
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+iPadOS menu support added - refactor works on macOS
+2025-12-04..08
+
+EditMenuCommands
+- added keyboard shortcuts
+
+ContentView
+- menustate added
+- init added to create menuState hooked up to doc
+- replace simple use of focusedSceneValue(doc) with focusedSceneObject(menuState) for macOS
+
+DocundoableDocument
+- undoPublisher added
+- append - update state of undoPublisher
+
+MenuCommands
+- protocol UndoRedoStatePublisher, MenuSceneState added here for now
+  EditMenuCommands
+  - replace simple use of @FocusedBinding(doc) with @FocusedObject(menuState) for macOS
+    - disabled states check menuState?.updates
+    - titles use menuState?.xxTitle
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+iPadOS menu support added - phase awareness on iPad
+2025-12-08
+
+PhaseHelpers added to detect changes with iPadOS
+
+MenuCommands.swift
+- MenuSceneState 
+  - added id for comparisons
+  - added becomeFrontmost, resignFrontmost to update class var
+
+DocundoableDocument
+- originalTitle and setOriginalTitle added for print debugging
+
+DocUndoableApp
+- call setOriginalTitle getting filename (not available via DocundoableDocument later) for debugging
+
+ContentView
+- add iOS specific code calling become/resignFrontmost
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+iPadOS menu support added - publishing menu updates on iPad
+2025-12-09
+
+MenuCommands.swift
+- MenuSceneState 
+  - updates removed epoch property
+  - canUn/Redo *title turned from calculated to simple @Published properties
+  - updatedState - instead of inc updates,copy all undo/redo properties from doc
+  
+DocundoableDocument
+- append(doable) - factor out task to updateUndoStateOnMain
+- apply - also call updateUndoStateOnMain
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+iPadOS menu support added - working scene change detection with updates on iPad
+2025-12-09
+
+MenuCommands.swift
+- nullSceneID filelocal var added
+- MenuSceneState 
+  - id added
+  - @Published canUndo etc changed (back) to simple getters from sceneDoc
+  - @Published updates added to trigger changes
+  - scenDoc added binding
+  - !macOS added cachedNullSceneDoc & activeMenuState
+  - init take ID
+  - updatedState incs updates count and calls becomeFrontmost for iOS
+  - becomeFrontmost/resignFrontmost added for iOS changing the sceneDoc in static activeMenuState
+- unused old FocusedValues extension and ActiveDocumentKey removed
+

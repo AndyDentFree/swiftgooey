@@ -11,10 +11,13 @@ import SwiftUI
 struct DocundoableApp: App {
     var body: some Scene {
         DocumentGroup(newDocument: DocundoableDocument()) { file in
-            ContentView(document: file.$document)
+            if let fname = file.fileURL?.deletingPathExtension().lastPathComponent, !fname.isEmpty {
+                file.document.setOriginalTitle(fname)
+            }
+            return ContentView(document: file.$document)
         }
         .commands{
-            // mostly for macOS
+            // mostly for macOS and iPadOS 26 on
             EditMenuCommands()
         }
     }

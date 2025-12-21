@@ -19,11 +19,21 @@ fileprivate class DocHelper {
     var undoStack = [Doable]()
     var redoStack = [Doable]()
     var isUndoing = false
+    weak var undoPublisher: UndoRedoStatePublisher? = nil
+    var originalTitle: String = ""  // mostly for easy breakpoints
+    
     func append(_ doable: Doable) {
         if isUndoing {
             redoStack.append(doable)
         } else {
             undoStack.append(doable)
+        }
+        updateUndoStateOnMain()
+    }
+    
+    func updateUndoStateOnMain() {
+        Task { @MainActor in
+            undoPublisher?.updatedState()
         }
     }
 }
@@ -41,6 +51,15 @@ struct DocundoableDocument: FileDocument {
         }
     }}
 #endif
+    var originalTitle: String { docH.originalTitle }
+    
+    func setOriginalTitle(_ newValue: String) {
+        docH.originalTitle = newValue
+    }
+    
+    func publishesStates(to pub: UndoRedoStatePublisher) {
+        docH.undoPublisher = pub
+    }
     
     var count: UInt {didSet{
         #if DEBUG
@@ -135,8 +154,9 @@ struct DocundoableDocument: FileDocument {
         case .note:
             note = doable.asString()
         case .unfocused:
-            break
+            return
         }
+        docH.updateUndoStateOnMain()
     }
 }
 

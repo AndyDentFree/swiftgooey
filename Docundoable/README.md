@@ -110,32 +110,43 @@ Rather than having possible complications between FileDocument and Codable, a 3-
 ## Menu Commands on macOS
 After the explorations below resulted in a robust iOS solution, turned my attention to macOS and of course we have standard **Edit** menu Undo and Redo without the toolbar. So, somehow, these need hooking up. This is complicated by a macOS SwiftUI document app being automatically multi-window.
 
-[This Hacking with Swift article][hws2] talks about using the UndoManager and focuses on getting it available correctly in a multi-window Mac. That's not helpful for _avoiding_ UndoManager and a little scary if it implies we _must__ use UM.
+[This Hacking with Swift article][hws2] talks about using the UndoManager and focuses on getting it available correctly in a multi-window Mac. That's not helpful for _avoiding_ UndoManager and a little scary if it implies we _must_ use UndoManager.
 
 ### Making active doc available to menu commands
 The command definitions, if in a separate file, need to know the current _active_ document aka viewModel. This [StackOverflow answer][so3] neatly covers that using `@FocusedValue` and injecting from the view with `.focusedSceneValue`.
 
 However, because we want to call mutable funcs, a `@FocusedBinding` is needed.
 
+
 ### Edit menu item replacements
 The [standard Edit menu][a3] has Undo and Redo already.
 
 We want somehow to _connect_ those to our code, so titles can be changed and we can act on the right document.
 
-Apple's [Article Accelerator sample][a4] shows customising them in the `Scene` attached to the `Window`. For a document-based app, our `Scene` contains a `DocumentGroup` which also accepts a `.commands` to specify the `CommandBuilder`. To get the current document into that builder, the `.focusedSceneValue` approach as above has to  be used.
+Apple's [Article Accelerator sample][a4] shows customising them in the `Scene` attached to the `Window`. For a document-based app, our `Scene` contains a `DocumentGroup` which also accepts a `.commands` to specify the `CommandBuilder`. To get the current document into that builder, the `.focusedSceneValue` approach as above was used. 
 
+#### macOS and menu evaluation
+The menu titles and enabling state directly evaluate the `@FocusedObject` `MenuSceneState`. This seems to be a _pull_ relationship, in that the menus can evaluate calculated properties such as `DocundoableDocument.undoMenuItemTitle`, at the time the menu is rendering.
 
-### Edit Menu and iPadOS 26
+All that is needed is for a **single @Published property** to be updated, triggering a rebuild of **any** SwiftUI views (menus). This broad rebuild is normally seen as a weakness of `ObservableObject` but in this case simplifies things.
+
+### Menus and iPadOS 26
 As of iPadOS 26, full menu support is included in the OS.
 
 People expect to see menus containing the same commands as their macOS equivalents.
 
-### Pushing to the MenuSceneState
-Idea is that, as we know when an undoable state has been updated in the `DocUndoableDocument`, it simply needs to push an update flag of some kind.
+However, these menus are implemented more like _traditional_ SwiftUI views in that they only update when they detect changes.
 
-We don't need to make all the 
+
+
+### Pushing to the MenuSceneState
+Idea is that, as we know when an undoable state has been updated in the `DocUndoableDocument`, the `MenuSceneState` needs updating so menus react to changes in title or enabling.
+
+This is complicated by the need to have a single bound object that the menus observe, rather than relying on `@FocusedObject` or `@FocusedBinding`.
 
 #### Debugging iPad Menus
+An extra note on this because at least one weirdness worth recording.
+
 Initially deployment on my iPad failed to show the two menu items that were inserted in `MenuCommands` with `CommandGroup(replacing: .undoRedo)`. 
 
 No build or runtime error was recorded.

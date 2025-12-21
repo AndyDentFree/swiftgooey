@@ -12,47 +12,75 @@ protocol UndoRedoStatePublisher: AnyObject {
     func updatedState()
 }
 
+fileprivate let nullSceneID: UUID = UUID()
+
 
 @MainActor
 final class MenuSceneState: ObservableObject, UndoRedoStatePublisher {
-    let id = UUID()  // for quick comparisons
-    @Published var canUndo: Bool = false
-    @Published var undoMenuItemTitle: String = "Undo"
-    @Published var canRedo: Bool = false
-    @Published var redoMenuItemTitle: String = "Redo"
-    fileprivate(set) var sceneDoc: Binding<DocundoableDocument>
+    var id: UUID  // for quick comparisons, also because in iPadOS the global instance is copied from local as become frontmost
+    fileprivate(set) var sceneDoc: Binding<DocundoableDocument>  // reassigned in static instance (on iPad) as scenes becomeFrontmost
+    @Published var updates: Int = 0  // no dependency on this needed, just having one published var means macOS menus pull the reset
+    // simple getter work because menus PULL from the focusedObject
+    var canUndo: Bool { sceneDoc.wrappedValue.canUndo }
+    var undoMenuItemTitle: String { sceneDoc.wrappedValue.undoMenuItemTitle }
+    var canRedo: Bool { sceneDoc.wrappedValue.canRedo }
+    var redoMenuItemTitle: String { sceneDoc.wrappedValue.redoMenuItemTitle }
+#if !os(macOS)
+    private static var cachedNullSceneDoc: Binding<DocundoableDocument> = .constant(DocundoableDocument()) // static instance needed so can init static object early
+
+    // acts as static always instantiated for iPad menu bindings but typed as optional because macOS uses FocusedObject
+    public static var activeMenuState: MenuSceneState? = MenuSceneState(sceneDoc: cachedNullSceneDoc, id: nullSceneID)
+#endif
     
-    public static var activeMenuState: MenuSceneState? = nil
-    
-    init(sceneDoc: Binding<DocundoableDocument>) {
+    init(sceneDoc: Binding<DocundoableDocument>, id: UUID = UUID()) {
+        self.id = id
         self.sceneDoc = sceneDoc
         sceneDoc.wrappedValue.publishesStates(to: self)
     }
-
+    
+#if os(macOS)
     func updatedState() {
-        canRedo = sceneDoc.wrappedValue.canRedo
-        redoMenuItemTitle = sceneDoc.wrappedValue.redoMenuItemTitle
-        canUndo = sceneDoc.wrappedValue.canUndo
-        undoMenuItemTitle = sceneDoc.wrappedValue.undoMenuItemTitle
+        updates += 1 // minimal update to cause menus to refresh on macOS because @FocusedObject correctly binds them to the instance
+    }
+    
+#else
+    func updatedState() {
+        guard let ams = Self.activeMenuState else {
+            return
+        }
+        if ams.id != id {
+            print("Somehow updatedState called but we're not frontmost scene, this is a bug")
+            becomeFrontmost()
+        }
+        ams.updates += 1  // instead of relying on rebinding via FocusedObject, poke the one which is the bound global instance
     }
     
     func becomeFrontmost() {
-        Self.activeMenuState = self
+        guard let ams = Self.activeMenuState else {
+            return
+        }
+        ams.sceneDoc = sceneDoc
+        ams.id = id
+        ams.updates += 1 // kick it to update the menus
     }
     
     func resignFrontmost() {
-        guard Self.activeMenuState?.id == id else { return }
-        Self.activeMenuState = nil
+        guard let ams = Self.activeMenuState, ams.id == id else { return }
+        ams.id = nullSceneID  // so comparisons fail if call resignFrontmost twice in a row
+        ams.sceneDoc = Self.cachedNullSceneDoc
     }
+#endif
 }
 
 
 struct EditMenuCommands: Commands {
 #if os(macOS)
     @FocusedObject private var menuState: MenuSceneState?
-//@FocusedBinding(\.activeDocument) var document // from ContentView
 #else
-    var menuState: MenuSceneState? { MenuSceneState.activeMenuState }
+    var menuState: MenuSceneState? =  MenuSceneState.activeMenuState
+    // concrete watched object triggering updates even though nothing is bound to it
+    // relies on platform-specific init of the static to an existing object even though typed as null
+    @ObservedObject var watchedMenuState: MenuSceneState =  MenuSceneState.activeMenuState!
 #endif
     
     var body: some Commands {
@@ -74,15 +102,3 @@ struct EditMenuCommands: Commands {
         }
     }
 }
-
-struct ActiveDocumentKey: FocusedValueKey {
-    typealias Value = Binding<DocundoableDocument>
-}
-
-extension FocusedValues {
-    var activeDocument: ActiveDocumentKey.Value? {
-    get { self[ActiveDocumentKey.self] }
-    set { self[ActiveDocumentKey.self] = newValue }
-  }
-}
-

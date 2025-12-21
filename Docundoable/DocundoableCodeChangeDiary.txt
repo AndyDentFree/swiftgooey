@@ -209,3 +209,22 @@ MenuCommands.swift
 DocundoableDocument
 - append(doable) - factor out task to updateUndoStateOnMain
 - apply - also call updateUndoStateOnMain
+
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+iPadOS menu support added - working scene change detection with updates on iPad
+2025-12-09
+
+MenuCommands.swift
+- nullSceneID filelocal var added
+- MenuSceneState 
+  - id added
+  - @Published canUndo etc changed (back) to simple getters from sceneDoc
+  - @Published updates added to trigger changes
+  - scenDoc added binding
+  - !macOS added cachedNullSceneDoc & activeMenuState
+  - init take ID
+  - updatedState incs updates count and calls becomeFrontmost for iOS
+  - becomeFrontmost/resignFrontmost added for iOS changing the sceneDoc in static activeMenuState
+- unused old FocusedValues extension and ActiveDocumentKey removed
+

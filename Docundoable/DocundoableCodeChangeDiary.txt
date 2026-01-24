@@ -228,3 +228,27 @@ MenuCommands.swift
   - becomeFrontmost/resignFrontmost added for iOS changing the sceneDoc in static activeMenuState
 - unused old FocusedValues extension and ActiveDocumentKey removed
 
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Clarifying rename
+2025-12-27
+
+MenuCommands.swift
+- MenuSceneState 
+  - activeMenuState renamed publishingMenuState to be clear it's not reassigned (I made that mistake in my more complicated use in Purrticles)
+  
+  
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Better number edit experience in steppers by only updating on completion - Fixes #2
+2026-01-22
+
+OnChangeShim added
+
+StepperNumView
+- EditPhase enum added
+- phase and draftText properties added
+- assignFromNSNumber, commitEditing, formattedValueString helpers added
+- View
+  - TextField now bound to draftText, was value
+  - .onSubmit calls commitEditing, not niling focusedTag
+  - onChangeOf(focusedTag) added to do phase updates inc calling commitEditing

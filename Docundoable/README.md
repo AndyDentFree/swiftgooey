@@ -154,6 +154,8 @@ No build or runtime error was recorded.
 Deleting the built app from the iPad and rerunning from Xcode worked. One suggestion, after I'd tried that, was to just increment the build number.  
 
 #### Keyboards and iPad Menus
+(Tips for testing menus on iPad, not about coding):
+
 The Apple Bluetooth keyboard has an **fn** key in the front left corner, which is the same as the **Globe** key on other models.
 
 Pressing **fn-M** aka **Globe-M** will show the iPad menu bar and allow navigating it by arrow keys. This can be a lot easier than the drag-from-to gesture used to get the menu bar.
@@ -161,7 +163,7 @@ Pressing **fn-M** aka **Globe-M** will show the iPad menu bar and allow navigati
 See [Apple docs on keyboard shortcuts][a5].
 
 ## Explorations - Detailed testing of UndoManager & Alternatives
-Note that shake (triggered by cmd-ctrl-Z on simulator) is only available  whilst editing the text field and prompts with an Undo/Redo Typing alert that is a smart chunk of editing.
+Note that shake (triggered by cmd-ctrl-Z on simulator) is only available  whilst editing the text field and prompts with an Undo/Redo Typing alert that is a smart chunk of editing (see more below).
 
 
 ### Basic Undo/Redo
@@ -170,7 +172,7 @@ After commit db8e304 _Add undo/redo using UndoManager_ testing the app
 - Undo menu appears with undo/redo titles that remain generic "Undo" and "Redo"
 - undo and redo appear to be disabled correctly when stacks empty
 - each individual character edit of note is separate undoable item
-- redo stack not emptied by moving on to new focus (this seems different to Purrticles) so if you have undone say 4 actions across 3 controls, you can redo them all
+- redo stack not emptied by moving on to new focus so if you have undone say 4 actions across 3 controls, you can redo them all
 - shake undo actions (see above) appear as yet another undoable item on our menu! (expected Redo) - seems the shake integration in TextField is seen as a positive editing action by generic UM as if you were typing, not integrated into stack.
 
 ### Naming undoables
@@ -225,9 +227,13 @@ Tapping the center label puts it into edit mode. Note the added **Default** and 
 
 ![Screenshot of app with keyboard visible and insertion point in the middle of a stepper label, showing that number is being edited](img/DocUndoablesWithKeyboard.png "Docundoable test app in the middle of editing a number")
 
+### Stepper edit field undo problem
+Fixing a [Purrticles][p1] bug and realised we have the same behaviour here. Basically, there was an **assumption** that reacting per-character change would be desirable and have no side-effect. The way that the iPad menus bug was fixed caused more observation of the menu state structures. Thus, if those are updated on each character edit of the numbers in the TextField, then a view rebuild is inadvertently triggered.
+
+A possible fix would be to change the observation but I decided it's closer to the user intent to let them _finish editing the value_ before the emitter updates.
 
 ### [Purrticles][p1] UI
-Screenshot of the app in which had the original problem. In the "Full" mode has 35 of these controls on the view.
+Screenshot of the app in which had the original problem. In the "Full" mode has 35 of StepperNumView-style controls on the view.
 
 ![Part of the XCode-like view of Purrticles](img/Purrticles_complexUI.png "Purrticles showing some of the scrollable control view, with a preview of particles above")
 

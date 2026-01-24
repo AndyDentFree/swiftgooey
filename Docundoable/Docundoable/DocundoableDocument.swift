@@ -62,9 +62,6 @@ struct DocundoableDocument: FileDocument {
     }
     
     var count: UInt {didSet{
-        #if DEBUG
-        print("didSet count old=\(oldValue) new=\(count) doc \(instanceID)")
-        #endif
         if oldValue != count {
             docH.append(DoableUInt(.count, oldValue))
         }

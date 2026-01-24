@@ -28,8 +28,9 @@ final class MenuSceneState: ObservableObject, UndoRedoStatePublisher {
 #if !os(macOS)
     private static var cachedNullSceneDoc: Binding<DocundoableDocument> = .constant(DocundoableDocument()) // static instance needed so can init static object early
 
-    // acts as static always instantiated for iPad menu bindings but typed as optional because macOS uses FocusedObject
-    public static var activeMenuState: MenuSceneState? = MenuSceneState(sceneDoc: cachedNullSceneDoc, id: nullSceneID)
+    // static always instantiated for iPad menu bindings but typed as optional because macOS uses FocusedObject
+    // effectively PUBLISHES specific scene's sceneDoc by having copy of the binding
+    public static var publishingMenuState: MenuSceneState? = MenuSceneState(sceneDoc: cachedNullSceneDoc, id: nullSceneID)
 #endif
     
     init(sceneDoc: Binding<DocundoableDocument>, id: UUID = UUID()) {
@@ -45,7 +46,7 @@ final class MenuSceneState: ObservableObject, UndoRedoStatePublisher {
     
 #else
     func updatedState() {
-        guard let ams = Self.activeMenuState else {
+        guard let ams = Self.publishingMenuState else {
             return
         }
         if ams.id != id {
@@ -56,7 +57,7 @@ final class MenuSceneState: ObservableObject, UndoRedoStatePublisher {
     }
     
     func becomeFrontmost() {
-        guard let ams = Self.activeMenuState else {
+        guard let ams = Self.publishingMenuState else {
             return
         }
         ams.sceneDoc = sceneDoc
@@ -65,7 +66,7 @@ final class MenuSceneState: ObservableObject, UndoRedoStatePublisher {
     }
     
     func resignFrontmost() {
-        guard let ams = Self.activeMenuState, ams.id == id else { return }
+        guard let ams = Self.publishingMenuState, ams.id == id else { return }
         ams.id = nullSceneID  // so comparisons fail if call resignFrontmost twice in a row
         ams.sceneDoc = Self.cachedNullSceneDoc
     }
@@ -77,10 +78,10 @@ struct EditMenuCommands: Commands {
 #if os(macOS)
     @FocusedObject private var menuState: MenuSceneState?
 #else
-    var menuState: MenuSceneState? =  MenuSceneState.activeMenuState
+    var menuState: MenuSceneState? =  MenuSceneState.publishingMenuState
     // concrete watched object triggering updates even though nothing is bound to it
     // relies on platform-specific init of the static to an existing object even though typed as null
-    @ObservedObject var watchedMenuState: MenuSceneState =  MenuSceneState.activeMenuState!
+    @ObservedObject var watchedMenuState: MenuSceneState =  MenuSceneState.publishingMenuState!
 #endif
     
     var body: some Commands {

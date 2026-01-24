@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+fileprivate enum EditPhase: Equatable {
+    case idle
+    case editing
+    case committing   // suppress focus-change recursion while we finalize
+}
+
 struct StepperNumView<T: Numeric & Comparable>: View {
     let title: String
     let tag: ControlFocusTag
@@ -29,6 +35,80 @@ struct StepperNumView<T: Numeric & Comparable>: View {
         return ret
     }()
     
+    //MARK:- Support buffered editing so not reacting to each character by reformatting
+    @State private var draftText: String = ""
+    @State private var phase = EditPhase.idle
+
+    private var formattedValueString: String {
+        numFormat.string(for: value) ?? ""
+    }
+
+
+    private func commitEditing() {
+        guard phase == .editing else { return }
+
+        phase = .committing
+        defer {
+            phase = .idle
+            if focusedTag == tag {
+                focusedTag = nil // may be doing commit because changed to somewhere else
+            }
+        }
+
+        let trimmed = draftText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty {
+            value = T.zero
+        } else {
+            guard let number = numFormat.number(from: trimmed) else {
+                draftText = formattedValueString // Parse failed: revert
+                return
+            }
+            assignFromNSNumber(number)
+        }
+        // Normalize draft to canonical formatted display after commit
+        draftText = formattedValueString
+    }
+
+    // MARK: - NSNumber -> T conversion (compile-safe via overloads)
+
+
+    private func assignFromNSNumber(_ number: NSNumber) {
+        // Integer cases
+        if T.self == UInt.self {
+            let i = number.int64Value
+            let clamped = i <= 0 ? 0 : i
+            value = UInt(clamped) as! T
+            return
+        }
+
+        if T.self == Int.self {
+            value = Int(number.int64Value) as! T
+            return
+        }
+
+        // Floating cases
+        if T.self == Double.self {
+            value = number.doubleValue as! T
+            return
+        }
+
+        if T.self == Float.self {
+            value = number.floatValue as! T
+            return
+        }
+
+        // rare case
+        if T.self == Float32.self {
+            value = Float32(number.doubleValue) as! T
+            return
+        }
+
+        fatalError("Unsupported numeric type \(T.self)")
+    }
+
+
+    //MARK:- View
+
     var body: some View {
         VStack {
             ZStack {
@@ -56,7 +136,7 @@ struct StepperNumView<T: Numeric & Comparable>: View {
                         .foregroundColor(.primary)
                         .background(Color.clear)
                         .onTapGesture {
-                            focusedTag = tag
+                            focusedTag = tag // triggers onChangeOf and thus setup for edit
                         }
                     
                     StepperButtonView(isDown: false) {
@@ -66,7 +146,7 @@ struct StepperNumView<T: Numeric & Comparable>: View {
                 }
                 .opacity(focusedTag == tag ? 0 : 1)
                 // Editable TextField
-                TextField("", value: $value, formatter: numFormat)
+                TextField("", text: $draftText)
 #if os(iOS)
                     .keyboardType(isFloat ? .decimalPad : .numberPad)
 #endif
@@ -77,7 +157,29 @@ struct StepperNumView<T: Numeric & Comparable>: View {
                     .background(Color.clear)
                     .opacity(focusedTag == tag ? 1 : 0)
                     .onSubmit {
-                        focusedTag = nil
+                        commitEditing()
+                    }
+                    .onChangeOf(focusedTag) { newFocus in
+                        // Suppress re-entrancy caused by our own focus updates
+                        guard phase != .committing else { return }
+
+                        if newFocus == tag {
+                            // If focus arrived externally (e.g. programmatically), ensure we’re in editing mode.
+                            if phase == .idle {
+                                draftText = formattedValueString
+                                phase = .editing
+                            }
+                            else {
+#if DEBUG
+                                print("impossible transition changing tag to \(tag) but phase is \(phase) ")
+#endif
+                            }
+                        } else {
+                            // Leaving focus: commit if we were editing.
+                            if phase == .editing {
+                                commitEditing()
+                            }
+                        }
                     }
                     .focused($focusedTag, equals: tag) // Automatically focus when editing starts
             }  // ZStack for TextEntry overlay

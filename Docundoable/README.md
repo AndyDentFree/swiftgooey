@@ -233,7 +233,7 @@ Fixing a [Purrticles][p1] bug and realised we have the same behaviour here. Basi
 A possible fix would be to change the observation but I decided it's closer to the user intent to let them _finish editing the value_ before the emitter updates.
 
 ### [Purrticles][p1] UI
-Screenshot of the app in which had the original problem. In the "Full" mode has 35 of StepperNumView-style controls on the view.
+Screenshot of the app in which had the original problem. In the "Full" mode has 35 StepperNumView-style controls on the view.
 
 ![Part of the XCode-like view of Purrticles](img/Purrticles_complexUI.png "Purrticles showing some of the scrollable control view, with a preview of particles above")
 

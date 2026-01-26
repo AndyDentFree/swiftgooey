@@ -13,7 +13,7 @@ fileprivate enum EditPhase: Equatable {
     case committing   // suppress focus-change recursion while we finalize
 }
 
-struct StepperNumView<T: Numeric & Comparable>: View {
+struct StepperNumView<T: Numeric & Comparable & StepperNumberFormatting>: View {
     let title: String
     let tag: ControlFocusTag
     @Binding var value: T
@@ -22,18 +22,7 @@ struct StepperNumView<T: Numeric & Comparable>: View {
     
     let zeroBased = T.self == UInt.self
     let isFloat =  T.self == Float32.self || T.self == Double.self
-    let numFormat: NumberFormatter =  {
-        let ret = NumberFormatter()
-        if T.self == Float32.self || T.self == Double.self {
-            ret.numberStyle = .decimal
-            ret.minimumFractionDigits = 2
-            ret.maximumFractionDigits = 2
-            ret.minimumIntegerDigits = 1
-        } else if T.self == UInt.self {
-            ret.minimum = 0
-        }
-        return ret
-    }()
+    let numFormat: NumberFormatter = { T.stepperFormatter }()
     
     //MARK:- Support buffered editing so not reacting to each character by reformatting
     @State private var draftText: String = ""
@@ -63,47 +52,10 @@ struct StepperNumView<T: Numeric & Comparable>: View {
                 draftText = formattedValueString // Parse failed: revert
                 return
             }
-            assignFromNSNumber(number)
+            value.assignFromNSNumber(number)
         }
         // Normalize draft to canonical formatted display after commit
         draftText = formattedValueString
-    }
-
-    // MARK: - NSNumber -> T conversion (compile-safe via overloads)
-
-
-    private func assignFromNSNumber(_ number: NSNumber) {
-        // Integer cases
-        if T.self == UInt.self {
-            let i = number.int64Value
-            let clamped = i <= 0 ? 0 : i
-            value = UInt(clamped) as! T
-            return
-        }
-
-        if T.self == Int.self {
-            value = Int(number.int64Value) as! T
-            return
-        }
-
-        // Floating cases
-        if T.self == Double.self {
-            value = number.doubleValue as! T
-            return
-        }
-
-        if T.self == Float.self {
-            value = number.floatValue as! T
-            return
-        }
-
-        // rare case
-        if T.self == Float32.self {
-            value = Float32(number.doubleValue) as! T
-            return
-        }
-
-        fatalError("Unsupported numeric type \(T.self)")
     }
 
 

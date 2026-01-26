@@ -252,3 +252,16 @@ StepperNumView
   - TextField now bound to draftText, was value
   - .onSubmit calls commitEditing, not niling focusedTag
   - onChangeOf(focusedTag) added to do phase updates inc calling commitEditing
+  
+  
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Cleanup generic format & assign code for easier reuse
+2026-01-26
+
+StepperNumberFormatting.swift
+- added with protocol and extensions
+
+StepperNumView
+- made conform to StepperNumberFormatting
+- numFormat init from T.stepperFormatter for compile-time generic instead of runtime type checks
+- assignFromNSNumber moved out to generic code in StepperNumberFormatting

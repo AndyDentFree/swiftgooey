@@ -265,3 +265,17 @@ StepperNumView
 - made conform to StepperNumberFormatting
 - numFormat init from T.stepperFormatter for compile-time generic instead of runtime type checks
 - assignFromNSNumber moved out to generic code in StepperNumberFormatting
+  
+  
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Factor our draft-based number editing for easier reuse
+2026-01-26
+
+FocusedNumView
+- added as cut-down copy of StepperNumView
+
+StepperNumView
+- remove conforming to StepperNumberFormatting
+- draftText, phase, formattedValueString removed
+- commitEditing() removed
+
